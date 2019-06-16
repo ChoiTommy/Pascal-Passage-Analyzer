@@ -1,0 +1,8 @@
+/.vscode/
+*.exe
+ppas.bat
+*.o
+*.ow
+tempCodeRunnerFile.pas
+*.ppu
+FpkCfg.cfg
