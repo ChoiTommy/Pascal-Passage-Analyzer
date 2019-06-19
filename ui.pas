@@ -32,46 +32,48 @@ end;
 
 procedure drawButton(startX, startY, width, height : integer; s : string; selected : Boolean);
 var i, j, x, y : integer;
-    text, background : Byte;
+    temp : string;
 begin
     x := (width div 2 - Length(s) div 2) + 1;
     y := height div 2 + 1;
     if selected then
     begin
-        text := button_textcolor_selected; //todo
-        background := button_textbackground_selected;
+        TextColor(button_textcolor_selected);
+        TextBackground(button_textbackground_selected);
     end
     else
     begin
-        text := button_textcolor_unselected;
-        background := button_textbackground_unselected;
+        TextColor(button_textcolor_unselected);
+        TextBackground(button_textbackground_unselected);
     end;
+
     for i := 1 to height do
     begin
         GotoXY(startX, startY + i - 1);
+        temp := '';
         j := 1;
         while j <= width do
+        begin
             if (y = i) and (x = j) then
             begin
-                TextBackground(background);
-                TextColor(text);
-                Write(s);
+                temp := temp + s;
                 j := j + Length(s);
             end
             else
             begin
-                TextBackground(background);
-                Write(' ');
+                temp := temp + ' ';
                 j := j + 1;
             end;
+        end;
+        Write(temp);
         WriteLn;
     end;
-    TextBackground(default_textbackground);
-    TextColor(default_textcolor);
+    resetDefaultColor(True, True);
 end;
 
 procedure drawMsgBox(startX, startY, width, height : integer; message : string);
 var i, j, x, y : Integer;
+    temp : string;
 begin
     TextColor(msgbox_textcolor);
     TextBackground(msgbox_background_color);
@@ -80,23 +82,25 @@ begin
     for i := 1 to height do
     begin
         GotoXY(startX, startY + i - 1);
+        temp := '';
         j := 1;
         while j <= width do
             if (i = 1) or (i = height) or (j = 1) or (j = width) then
             begin
-                Write(msgbox_border_char);
+                temp := temp + msgbox_border_char;
                 j := j + 1;
             end
             else if (x = j) and (y = i) then
             begin
-                Write(message);
+                temp := temp + message;
                 j := j + Length(message);
             end
             else
             begin
-                Write(' ');
+                temp := temp + ' ';
                 j := j + 1;
             end;
+        Write(temp);
     end;
     resetDefaultColor(True, True);
 end;

@@ -1,9 +1,9 @@
 program UI_test;
-uses crt;
+uses crt, FastConsole;
 const default_textbackground = Black;
       default_textcolor = LightGray;
       button_textbackground_unselected = LightGray;
-      button_textbackground_selected = Black;
+      button_textbackground_selected = Red;
       button_textcolor_unselected = Black;
       button_textcolor_selected = LightGray;
       msgbox_background_color = LightGray;
@@ -27,41 +27,39 @@ end;
 procedure drawButton(startX, startY, width, height : integer; s : string; selected : Boolean);
 //recommendation : all -> odd;
 var i, j, x, y : integer;
-    text, background : Byte;
+    temp : string;
 begin
     x := (width div 2 - Length(s) div 2) + 1;
     y := height div 2 + 1;
     if selected then
     begin
-        text := button_textcolor_selected;
-        background := button_textbackground_selected;
+        TextColor(button_textcolor_selected);
+        TextBackground(button_textbackground_selected);
     end
     else
     begin
-        text := button_textcolor_unselected;
-        background := button_textbackground_unselected;
+        TextColor(button_textcolor_unselected);
+        TextBackground(button_textbackground_unselected);
     end;
     for i := 1 to height do
     begin
         GotoXY(startX, startY + i - 1);
+        temp := '';
         j := 1;
         while j <= width do
         begin
             if (y = i) and (x = j) then
             begin
-                TextBackground(background);
-                TextColor(text);
-                Write(s);
+                temp := temp + s;
                 j := j + Length(s);
             end
             else
             begin
-                TextBackground(background);
-                Write(' ');
+                temp := temp + ' ';
                 j := j + 1;
             end;
         end;
-        WriteLn;
+        Write(temp);
     end;
     resetDefaultColor(True, True);
 end;
@@ -69,6 +67,7 @@ end;
 procedure drawMsgBox(startX, startY, width, height : integer; message : string);
 //just a msgbox with no buttons, create buttons : drawButton();
 var i, j, x, y : Integer;
+    temp : string;
 begin
     TextColor(msgbox_textcolor);
     TextBackground(msgbox_background_color);
@@ -77,25 +76,27 @@ begin
     for i := 1 to height do
     begin
         GotoXY(startX, startY + i - 1);
+        temp := '';
         j := 1;
         while j <= width do
         begin
             if (i = 1) or (i = height) or (j = 1) or (j = width) then
             begin
-                Write(msgbox_border_char);
+                temp := temp + msgbox_border_char;
                 j := j + 1;
             end
             else if (x = j) and (y = i) then
             begin
-                Write(message);
+                temp := temp + message;
                 j := j + Length(message);
             end
             else
             begin
-                Write(' ');
+                temp := temp + ' ';
                 j := j + 1;
             end;
         end;
+        Write(temp);
     end;
     resetDefaultColor(True, True);
 end;
@@ -122,6 +123,9 @@ end;
 
 begin
     cursoroff;
+    {drawButton(2, 2, 70, 20, 'Nerd', False);
+    Readln;
+    drawButton(2, 2, 70, 20, 'Nerd', True);}
     drawMsgBox(5, 3, 50, 11, 'Are you nerd?');
     drawButton(5+5, 3+11-3, 5, 1, 'Yes', False);
     drawButton(5+5+33, 3+11-3, 5, 1, 'No', True);

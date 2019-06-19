@@ -1,12 +1,12 @@
 program main;
-(* Screen id:
+(* Screen id (not finalized):
 * -1: exit application
 * 0 : main screen
 * 1 : (exit application...)
 * 2 : preference screen
 * ...
 *)
-uses crt, ui;
+uses crt, ui, FastConsole;
 const title_art_path = 'Text files/title.txt';
 	  window_width = 120;
 
