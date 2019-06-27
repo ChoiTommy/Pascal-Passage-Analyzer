@@ -1,11 +1,12 @@
 program READTXT_test;
+uses longStr;
 (*Current problems:
 * - '!', '?', ':', and many other punctuation marks are not considered
 * - many memory spaced are wasted
 * - structure is quite complicated (passage[] : paragraph; passage[][] : sentence; passage[][].word[] : word;...)
 * - dependent on the format of the txt file (each line in a txt file is a paragraph, no. of lines : no. of paragraphs)
 *)
-const file_path = 'Text files/test.txt';
+const file_path = 'Text files/microsoft_word.txt';
 type sentence = record
                     word : array[1..50] of string;
                     punctuation : Char;
@@ -13,27 +14,12 @@ type sentence = record
      paragraph = array[1..50] of sentence;
      passage = array[1..50] of paragraph;
 
+procedure approach_1();
 var passage_test : passage;
     t : text;
     c : Char;
     s : string;
     i, x, a, k, j : Integer;
-
-{procedure readParagraph();
-begin
-
-end;
-
-procedure readPassage();
-begin
-
-end;
-
-procedure writePassage();
-begin
-
-end;}
-
 begin
     //a : paragraph counter
     //x : sentence counter
@@ -41,10 +27,6 @@ begin
     Assign(t, file_path);
     Reset(t);
     a := 1;
-
-    WriteLn('Hello world');
-    ReadLn;
-
     {Process the txt file}
     while not eof(t) do
     begin
@@ -73,10 +55,6 @@ begin
         a := a + 1;
         readln(t);
     end;
-
-    WriteLn('Bye');
-    ReadLn;
-
     {Output results}
     for i := 1 to 50 do
         if passage_test[i][1].word[1] <> '' then
@@ -88,5 +66,25 @@ begin
                             writeln(passage_test[i][j].word[k]);
                     WriteLn(passage_test[i][j].punctuation);
                 end;
-    readln;
+end;
+
+procedure approach_2();
+var passage : longString;
+    i : Integer;
+    t : Text;
+begin
+    Assign(t, file_path);
+    Reset(t);
+    readLongString(t, passage);
+    for i := 0 to Length(passage)-1 do
+        write(passage[i]);
+    ReadLn;
+end;
+
+begin
+    approach_1();
+    WriteLn;
+    WriteLn('===================');
+    WriteLn;
+   // approach_2();
 end.

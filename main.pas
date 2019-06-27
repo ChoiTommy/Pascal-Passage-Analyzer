@@ -6,9 +6,10 @@ program main;
 * 2 : preference screen
 * ...
 *)
-uses crt, ui, FastConsole;
+uses crt, ui, FastConsole, longStr;
 const title_art_path = 'Text files/title.txt';
 	  window_width = 120;
+	  file_path = 'Text files/test.txt';
 
 var screenWidth : Integer;
 	screenId : Integer;
@@ -64,8 +65,10 @@ begin
 		preference[i] := False;
 	drawCheckBox(5, 2, 'I''m a nerd.', true, False);
 	position := 0;
-	drawCheckBox(5, 4, 'I''m absolutely a nerd.', False, False);
-	drawCheckBox(5, 6, 'I''m definitely a nerd.', False, False);
+	drawCheckBox(5, 4, 'I''m definitely a nerd.', False, False);
+	drawCheckBox(5, 6, 'I''m absolutely a nerd.', False, False);
+	GotoXY(23, 8);
+	Write('- Herny YSL');
 	repeat
 	  	c := ReadKey;
 		if (c = #0) or (c = #13) then
@@ -75,8 +78,8 @@ begin
 			begin
 				case position of
 					0 : drawCheckBox(5, 2, 'I''m a nerd.', False, preference[position]);
-					1 : drawCheckBox(5, 4, 'I''m absolutely a nerd.', False, preference[position]);
-					2 : drawCheckBox(5, 6, 'I''m definitely a nerd.', False, preference[position]);
+					1 : drawCheckBox(5, 4, 'I''m definitely a nerd.', False, preference[position]);
+					2 : drawCheckBox(5, 6, 'I''m absolutely a nerd.', False, preference[position]);
 				end;
 				case c of
 					#72 : if position = 0 then position := 2 else position := position - 1;
@@ -85,12 +88,33 @@ begin
 				end;
 				case position of
 					0 : drawCheckBox(5, 2, 'I''m a nerd.', True, preference[position]);
-					1 : drawCheckBox(5, 4, 'I''m absolutely a nerd.', True, preference[position]);
-					2 : drawCheckBox(5, 6, 'I''m definitely a nerd.', True, preference[position]);
+					1 : drawCheckBox(5, 4, 'I''m definitely a nerd.', True, preference[position]);
+					2 : drawCheckBox(5, 6, 'I''m absolutely a nerd.', True, preference[position]);
 				end;
 			end;
 		end;
 	until c = #27;
+	nextscreen := 0;
+end;
+
+procedure analyseScreen(var nextscreen : Integer);
+var passage : longString;
+    i : Integer;
+    t : Text;
+	n : string;
+begin
+	ClrScr;
+    Assign(t, file_path);
+    Reset(t);
+    readLongString(t, passage);
+	GotoXY(1, 1);
+    for i := 0 to Length(passage)-1 do
+        write(passage[i]);
+	WriteLn;
+	WriteLn('==========');
+	str(Length(passage), n);
+	WriteLn('No. of characters: ' + n);
+	ReadLn;
 	nextscreen := 0;
 end;
 
@@ -114,6 +138,7 @@ begin
 	  	case screenId of
 		    0 : mainScreen(screenId);
 			2 : preferenceScreen(screenId);
+			3 : analyseScreen(screenId);
 		end;
 	until screenId = 1;
 	ClrScr;
