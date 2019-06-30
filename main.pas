@@ -9,10 +9,20 @@ program main;
 uses crt, ui, FastConsole, longStr;
 const title_art_path = 'Text files/title.txt';
 	  window_width = 120;
-	  file_path = 'Text files/test.txt';
+	  file_path = 'Text files/dummy.txt';
 
 var screenWidth : Integer;
 	screenId : Integer;
+
+function countNoOfSentences(s : longString): Integer;
+{ !!!boss!!! }
+var i : Integer;
+begin
+	countNoOfSentences := 0;
+	for i := 0 to Length(s)-1 do
+	  	if (s[i] = '.') or (s[i] = '?') or (s[i] = '!') then
+			countNoOfSentences := countNoOfSentences + 1;
+end;
 
 procedure mainScreen(var nextscreen: Integer);
 //todo declare const inside procedure
@@ -99,21 +109,24 @@ end;
 
 procedure analyseScreen(var nextscreen : Integer);
 var passage : longString;
-    i : Integer;
     t : Text;
-	n : string;
 begin
 	ClrScr;
     Assign(t, file_path);
     Reset(t);
     readLongString(t, passage);
 	GotoXY(1, 1);
-    for i := 0 to Length(passage)-1 do
-        write(passage[i]);
+    writeLongString(passage);
 	WriteLn;
 	WriteLn('==========');
-	str(Length(passage), n);
-	WriteLn('No. of characters: ' + n);
+	Write('No. of characters: ');
+	WriteLn(Length(passage) - countCharInLongString(#10, passage) - countCharInLongString(#13, passage));
+	Write('No. of paragraphs: ');
+	WriteLn(countCharInLongString(#10, passage) + 1);
+	Write('No. of sentences(not really): '); //Todo can't count dialogs
+	WriteLn(countNoOfSentences(passage));
+	Write('No. of words(not really): '); //Todo can't count space-hyphen-space
+	WriteLn(countCharInLongString(' ', passage) + countCharInLongString(#10, passage) + 1);
 	ReadLn;
 	nextscreen := 0;
 end;

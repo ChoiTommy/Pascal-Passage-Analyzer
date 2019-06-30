@@ -1,0 +1,155 @@
+{}
+function castLongStringToPassage(s : longString): passage;
+var i, n, word_array_counter : Integer;
+	temp : string;
+	c : Char;
+begin
+	n := 0;
+	temp := '';
+	word_array_counter := 0;
+
+	while (s[n] <> ' ') and (s[n] <> '.') and (s[n] <> '?') and (s[n] <> ',') and (s[n] <> '!') do
+	begin
+		temp := temp + s[n];
+		n := n + 1;
+	end;
+	word_array_counter := word_array_counter + 1;
+	SetLength(castLongStringToPassage.paragraph[1].sentence[1].clause[1].word, word_array_counter);
+	castLongStringToPassage.paragraph[1].sentence[1].clause[1].word[word_array_counter-1] := temp;
+	if (s[n] = ',') or (s[n] = '.') or (s[n] = '?') or (s[n] = '!') then
+		castLongStringToPassage.paragraph[1].sentence[1].clause[1].punctuation := s[n];
+
+
+
+
+
+
+	i := 0;
+	while i < Length(s) do
+	begin
+		c := s[i];
+		if (c = '.') or (c = '?') or (c = ',') or (c = '!') then
+			castLongStringToPassage.paragraph[1].sentence[1].clause[1].punctuation := c;
+		else if c = ' ' then
+		begin
+
+		end
+		else
+			temp := temp + c;
+	end;
+end;}
+{
+function castLongStringToPassage(s : longString): passage;
+var i, array_length_word : Integer;
+	temp : string;
+	c : Char;
+begin
+
+	i := 0;
+	temp := '';
+	array_length_word := 0;
+	while (s[i] <> '.') and (s[i] <> ',') and (s[i] <> ' ') do
+	begin
+		temp := temp + s[i];
+		i := i + 1;
+	end;
+
+	SetLength(castLongStringToPassage[1][1].word, i + 1);
+	castLongStringToPassage[1][1].word[i] := temp;
+
+
+end;}
+
+
+
+{type clause = record
+                    word : array of string;
+                    punctuation : Char;
+					wordCount : Integer;
+              end;
+     sentence = record
+	 				clause : array of clause;
+					clauseCount : Integer;
+				end;
+	 paragraph = record
+	 				sentence : array of sentence;
+					sentenceCount : Integer;
+				 end;
+	 passage = record
+	 				paragraph : array of paragraph;
+					paragraphCount : Integer;
+			   end;}
+//passage.paragraph.sentence.clause.Word
+
+
+
+
+	//text_1 : passage;
+	{SetLength(text_1.paragraph, 2);
+	SetLength(text_1.paragraph[1].sentence, 2);
+	SetLength(text_1.paragraph[1].sentence[1].clause, 2);
+	SetLength(text_1.paragraph[1].sentence[1].clause[1].word, 2);
+	text_1.paragraph[1].sentence[1].clause[1].word[1] := 'abc';
+	Write(text_1.paragraph[1].sentence[1].clause[1].word[1]);}
+
+{function castLongStringToPassage(str : longString): passage;
+var spacePos, punPos, lfPos, pos, w, c, s, p : Integer;
+	temp : string;
+begin
+	w := 0; //word counter
+	c := 0; //clause counter
+	s := 0; //sentence counter
+	p := 0; //paragraph counter
+	while str <> '' do
+	begin
+		if str[0] = #13 then
+		begin
+			p := p + 1;//paragraph counter++
+			c := 0;
+			s := 0;
+			p := 0;
+			SetLength(castLongStringToPassage.paragraph, p);
+			str := stringToLongString(copy(str, 1));
+		end
+		else if (str[0] = ',') then
+		begin
+			c := c + 1;
+			castLongStringToPassage.paragraph[p].sentence[s].clause[c].punctuation := s[0];
+			str := stringToLongString(copy(str, 1));
+
+			w := 0;
+		end
+		else if (str[0] = '.') or (str[0] = '?') or (str[0] = '!') then
+		begin
+			castLongStringToPassage.paragraph[p].sentence[s].clause[c].punctuation := s[0];
+			str := stringToLongString(copy(str, 1));
+			s := s + 1;
+			c := 0;
+			w := 0;
+		end
+		else
+		begin
+			spacePos := posOfChar(' ', s);
+			punPos := minIntValue(posOfChar('.', s), posOfChar(',', s), posOfChar('?', s), posOfChar('!', s));
+			pos := Min(spacePos, punPos);
+			temp := copy(str, 0, pos);
+			castLongStringToPassage.paragraph[p].sentence[s].clause[c].word[w] := temp;
+			str := stringToLongString(copy(str, pos+1));
+		end;
+
+
+		else if (spacePos < punPos) then
+		begin
+			temp := copy(s, 0, spacePos);
+			castLongStringToPassage.paragraph[p].sentence[s].clause[c].word[w] := temp;
+			s := stringToLongString(copy(s, spacePos+1));
+		end
+		else if (punPos < spacePos) then
+		begin
+			temp := copy(s, 0, punPos);
+			castLongStringToPassage.paragraph[1].sentence[1].clause[1].word[1] := temp;
+			s := stringToLongString(copy(s, punPos+1));
+		end;
+
+	end;
+end;}
