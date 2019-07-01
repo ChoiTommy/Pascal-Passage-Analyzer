@@ -5,7 +5,8 @@ type longString = array of Char;
 procedure readLongString(var s : longString);
 procedure readLongString(var t : Text; var s : longString);
 procedure writeLongString(s : longString);
-function countCharInLongString(c : Char; s : longString) : Integer;
+function countInLongString(c : Char; s : longString) : Integer;
+function countInLongString(t : string; s : longString) : Integer;
 function posOfChar(c : char; s : longString) : Integer;
 function copy(s : longString; start, count : Integer): string;
 function copy(s : longString; start : Integer): string;
@@ -47,16 +48,36 @@ var i : Integer;
 begin
     for i := 0 to Length(s)-1 do
         if (s[i] >= #32) and (s[i] <= #126) then
-            Write(s[i]);
+            Write(s[i])
+        else if (s[i] = #13) and (s[i+1] = #10) then
+        begin
+            WriteLn;
+            WriteLn;
+        end;
 end;
 
-function countCharInLongString(c : Char; s : longString) : Integer;
+function countInLongString(c : Char; s : longString) : Integer;
 var i : Integer;
 begin
-    countCharInLongString := 0;
+    countInLongString := 0;
     for i := 0 to Length(S)-1 do
         if s[i] = c then
-            countCharInLongString := countCharInLongString + 1;
+            countInLongString := countInLongString + 1;
+end;
+
+function countInLongString(t : string; s : longString) : Integer;
+var i, j : Integer;
+    temp : string;
+begin
+    countInLongString := 0;
+    for i := 0 to Length(S)-1 do
+    begin
+        temp := '';
+        for j := 1 to Length(t) do
+            temp := temp + s[i+j-1];
+        if t = temp then
+            countInLongString := countInLongString + 1;
+    end;
 end;
 
 function posOfChar(c : char; s : longString) : Integer;

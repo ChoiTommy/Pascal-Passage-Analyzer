@@ -2,6 +2,7 @@ program READTXT_test;
 uses longStr;
 (*Current problems:
 * - '!', '?', ':', and many other punctuation marks are not considered
+* - U.S. and other words are treated as two sentences
 * - many memory spaced are wasted
 * - structure is quite complicated (passage[] : paragraph; passage[][] : sentence; passage[][].word[] : word;...)
 * - dependent on the format of the txt file (each line in a txt file is a paragraph, no. of lines : no. of paragraphs)

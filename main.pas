@@ -1,5 +1,6 @@
 program main;
-(* Screen id (not finalized):
+(*
+* Screen id (not finalized):
 * -1: exit application
 * 0 : main screen
 * 1 : (exit application...)
@@ -116,18 +117,25 @@ begin
     Reset(t);
     readLongString(t, passage);
 	GotoXY(1, 1);
+
     writeLongString(passage);
+
 	WriteLn;
 	WriteLn('==========');
+
 	Write('No. of characters: ');
-	WriteLn(Length(passage) - countCharInLongString(#10, passage) - countCharInLongString(#13, passage));
+	WriteLn(Length(passage) - countInLongString(#10, passage) - countInLongString(#13, passage));
+
 	Write('No. of paragraphs: ');
-	WriteLn(countCharInLongString(#10, passage) + 1);
+	WriteLn(countInLongString(#13 + #10, passage) + 1);
+
 	Write('No. of sentences(not really): '); //Todo can't count dialogs
 	WriteLn(countNoOfSentences(passage));
+
 	Write('No. of words(not really): '); //Todo can't count space-hyphen-space
-	WriteLn(countCharInLongString(' ', passage) + countCharInLongString(#10, passage) + 1);
+	WriteLn(countInLongString(' ', passage) + countInLongString(#13 + #10, passage) + 1);
 	ReadLn;
+	Close(t);
 	nextscreen := 0;
 end;
 
