@@ -10,13 +10,13 @@ program main;
 uses crt, ui, FastConsole, longStr;
 const title_art_path = 'Text files/title.txt';
 	  window_width = 120;
-	  file_path = 'Text files/dummy.txt';
+	  file_path = 'Text files/passage.txt';
 
 var screenWidth : Integer;
 	screenId : Integer;
 
 function countNoOfSentences(s : longString): Integer;
-{ !!!boss!!! }
+{//TODO !!!boss!!! }
 var i : Integer;
 begin
 	countNoOfSentences := 0;
@@ -108,9 +108,18 @@ begin
 	nextscreen := 0;
 end;
 
+function toMinute(r : Real): string;
+var m, s : string;
+begin
+	Str(trunc(r), m);
+	Str(frac(r)*60:0:0, s);
+	toMinute := m + ':' + s;
+end;
+
 procedure analyseScreen(var nextscreen : Integer);
 var passage : longString;
     t : Text;
+	words : Integer;
 begin
 	ClrScr;
     Assign(t, file_path);
@@ -129,11 +138,16 @@ begin
 	Write('No. of paragraphs: ');
 	WriteLn(countInLongString(#13 + #10, passage) + 1);
 
-	Write('No. of sentences(not really): '); //Todo can't count dialogs
+	Write('No. of sentences(not accurate): '); //Todo can't count dialogs
 	WriteLn(countNoOfSentences(passage));
 
-	Write('No. of words(not really): '); //Todo can't count space-hyphen-space
-	WriteLn(countInLongString(' ', passage) + countInLongString(#13 + #10, passage) + 1);
+	Write('No. of words: ');
+	words := countInLongString(' ', passage) + countInLongString(#13 + #10, passage) + 1 - countInLongString('-', passage);
+	WriteLn(words);
+
+	Write('Reading time (200 wpm/min): ');
+	WriteLn(toMinute(words / 200));
+
 	ReadLn;
 	Close(t);
 	nextscreen := 0;
@@ -141,6 +155,7 @@ end;
 
 begin
 	cursoroff;
+	setScreenWidth(window_width); //initialization for writeLongString
 	screenWidth := getWindowWidth;
 	screenId := 0;
 	if screenWidth <> window_width then

@@ -1,10 +1,10 @@
 unit longStr;
 
 interface
+uses crt;
 type longString = array of Char;
 procedure readLongString(var s : longString);
 procedure readLongString(var t : Text; var s : longString);
-procedure writeLongString(s : longString);
 function countInLongString(c : Char; s : longString) : Integer;
 function countInLongString(t : string; s : longString) : Integer;
 function posOfChar(c : char; s : longString) : Integer;
@@ -12,8 +12,11 @@ function copy(s : longString; start, count : Integer): string;
 function copy(s : longString; start : Integer): string;
 function stringToLongString(s : string): longString;
 function longStringToString(s : longString): string;
+procedure setScreenWidth(a : Integer);
+procedure writeLongString(s : longString);
 
 implementation
+var screen_width : Integer;
 procedure readLongString(var s : longString);
 var n : Integer;
     c : Char;
@@ -41,19 +44,6 @@ begin
         Read(t, c);
         s[n-1] := c;
     end;
-end;
-
-procedure writeLongString(s : longString);
-var i : Integer;
-begin
-    for i := 0 to Length(s)-1 do
-        if (s[i] >= #32) and (s[i] <= #126) then
-            Write(s[i])
-        else if (s[i] = #13) and (s[i+1] = #10) then
-        begin
-            WriteLn;
-            WriteLn;
-        end;
 end;
 
 function countInLongString(c : Char; s : longString) : Integer;
@@ -122,4 +112,41 @@ begin
     for i :=  0 to Length(s)-1 do
         longStringToString := longStringToString + s[i];
 end;
+
+procedure setScreenWidth(a : Integer);
+begin
+    screen_width := a;
+end;
+
+procedure writeLongString(s : longString);
+var i, x : Integer;
+    temp : string;
+begin
+    i := 0;
+    temp := '';
+    while i < Length(s) do
+    begin
+        if (s[i] in ['a'..'z']) or (s[i] in ['A'..'Z']) then
+            temp := temp + s[i]
+        else if not(s[i] in [#13, #10]) then
+        begin
+            x := WhereX;
+            if x + Length(temp) > screen_width then
+            begin
+                WriteLn;
+                Write(temp);
+            end
+            else Write(temp);
+            Write(s[i]);
+            temp := '';
+        end
+        else if (s[i] = #13) and (s[i+1] = #10) then
+        begin
+            WriteLn;
+            WriteLn;
+        end;
+        i := i + 1;
+    end;
+end;
+
 end.
