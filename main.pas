@@ -1,29 +1,20 @@
 program main;
-(*
-* Screen id (not finalized):
-* -1: exit application
-* 0 : main screen
-* 1 : (exit application...)
-* 2 : preference screen
-* ...
-*)
-uses crt, ui, FastConsole, longStr;
+{*
+ * Screen id (not finalized):
+ * -1: exit application
+ * 0 : main screen
+ * 1 : (exit application...)
+ * 2 : preference screen
+ * ...
+ *}
+uses crt, ui, FastConsole, longStringType, stringListType;
 const title_art_path = 'Text files/title.txt';
 	  window_width = 120;
 	  file_path = 'Text files/passage.txt';
+	  eos_marks = ['.', '?', '!'];
 
 var screenWidth : Integer;
 	screenId : Integer;
-
-function countNoOfSentences(s : longString): Integer;
-{//TODO !!!boss!!! }
-var i : Integer;
-begin
-	countNoOfSentences := 0;
-	for i := 0 to Length(s)-1 do
-	  	if (s[i] = '.') or (s[i] = '?') or (s[i] = '!') then
-			countNoOfSentences := countNoOfSentences + 1;
-end;
 
 procedure mainScreen(var nextscreen: Integer);
 //todo declare const inside procedure
@@ -116,10 +107,48 @@ begin
 	toMinute := m + ':' + s;
 end;
 
+function countNoOfSentences(s : longString): Integer;
+//TODO !!!boss!!!
+var i : Integer;
+begin
+	countNoOfSentences := 0;
+	for i := 0 to Length(s)-1 do
+	  	if s[i] in eos_marks then
+			countNoOfSentences := countNoOfSentences + 1;
+end;
+
+function getListOfUniqueWords(s : longString): stringList;
+(* Get a set of unique words from a passage
+ * Current problems:
+ * Only words are being considered, other words
+ * such as emails (treated as one word) or short
+ * forms (e.g. U.S., a.k.a.) can't be added to
+ * the list correctly.
+ *)
+var i : Integer;
+	temp : string;
+begin
+	clear(getListOfUniqueWords);
+	temp := '';
+	for i := 0 to Length(s)-1 do
+	begin
+		if (s[i] in ['a'..'z']) or (s[i] in ['A'..'Z']) or (s[i] in ['0'..'9']) then
+            temp := temp + lowerCase(s[i])
+		else
+		begin
+			if (not(contains(getListOfUniqueWords, temp)) or (size(getListOfUniqueWords) = 0)) and (temp <> '') then
+				add(getListOfUniqueWords, temp);
+			temp := '';
+		end;
+	end;
+end;
+
+
 procedure analyseScreen(var nextscreen : Integer);
 var passage : longString;
     t : Text;
-	words : Integer;
+	words, i : Integer;
+	uniqueWords : stringList;
 begin
 	ClrScr;
     Assign(t, file_path);
@@ -147,6 +176,12 @@ begin
 
 	Write('Reading time (200 wpm/min): ');
 	WriteLn(toMinute(words / 200));
+
+	uniqueWords := getListOfUniqueWords(passage);
+	Write('No. of unique words: ');
+	WriteLn(size(uniqueWords));
+	for i := 0 to size(uniqueWords)-1 do
+		writeln(uniqueWords[i]);
 
 	ReadLn;
 	Close(t);

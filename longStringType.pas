@@ -1,4 +1,4 @@
-unit longStr;
+unit longStringType;
 
 interface
 uses crt;
@@ -10,14 +10,15 @@ function countInLongString(t : string; s : longString) : Integer;
 function posOfChar(c : char; s : longString) : Integer;
 function copy(s : longString; start, count : Integer): string;
 function copy(s : longString; start : Integer): string;
-function stringToLongString(s : string): longString;
-function longStringToString(s : longString): string;
+function castStringToLongString(s : string): longString;
+function castLongStringToString(s : longString): string;
 procedure setScreenWidth(a : Integer);
 procedure writeLongString(s : longString);
 
 implementation
 var screen_width : Integer;
 procedure readLongString(var s : longString);
+(*Read long string in console*)
 var n : Integer;
     c : Char;
 begin
@@ -33,6 +34,7 @@ begin
 end;
 
 procedure readLongString(var t : Text; var s : longString);
+(*Read long string in a text file*)
 var n : Integer;
     c : Char;
 begin
@@ -47,6 +49,7 @@ begin
 end;
 
 function countInLongString(c : Char; s : longString) : Integer;
+(*Count the no. of occurrance of a character in a long string*)
 var i : Integer;
 begin
     countInLongString := 0;
@@ -56,6 +59,7 @@ begin
 end;
 
 function countInLongString(t : string; s : longString) : Integer;
+(*Count the no. of occurrance of a string in a long string*)
 var i, j : Integer;
     temp : string;
 begin
@@ -71,6 +75,7 @@ begin
 end;
 
 function posOfChar(c : char; s : longString) : Integer;
+(*Get the position of a character in a long string (0-based)*)
 var i : Integer;
 begin
     i := 0;
@@ -82,6 +87,7 @@ begin
 end;
 
 function copy(s : longString; start, count : Integer): string;
+(*Extract a certain no. of a characters from the starting position in a long string*)
 var i : Integer;
 begin
     copy := '';
@@ -90,6 +96,7 @@ begin
 end;
 
 function copy(s : longString; start : Integer): string;
+(*Extract a characters from the starting position to the end in a long string*)
 var i : Integer;
 begin
     copy := '';
@@ -97,28 +104,37 @@ begin
         copy := copy + s[i];
 end;
 
-function stringToLongString(s : string): longString;
+function castStringToLongString(s : string): longString;
+(*Type casting*)
 var i : Integer;
 begin
-    SetLength(stringToLongString, Length(s));
+    SetLength(castStringToLongString, Length(s));
     for i := 0 to Length(s)-1 do
-        stringToLongString[i] := s[i];
+        castStringToLongString[i] := s[i];
 end;
 
-function longStringToString(s : longString): string;
+function castLongStringToString(s : longString): string;
+(*Type casting (Maximum limit of characters : 255)*)
 var i : Integer;
 begin
-    longStringToString := '';
+    castLongStringToString := '';
     for i :=  0 to Length(s)-1 do
-        longStringToString := longStringToString + s[i];
+        castLongStringToString := castLongStringToString + s[i];
 end;
 
 procedure setScreenWidth(a : Integer);
+(*Initialization of this unit (mainly for the procedure writeLongString()*)
 begin
     screen_width := a;
 end;
 
 procedure writeLongString(s : longString);
+(* Write long string in passage format in the console
+ * Current problems:
+ * Only words are being considered in word wrapping,
+ * other words such as emails (treated as one word)
+ * will be seperated at the end of the line.
+ *)
 var i, x : Integer;
     temp : string;
 begin
@@ -126,7 +142,7 @@ begin
     temp := '';
     while i < Length(s) do
     begin
-        if (s[i] in ['a'..'z']) or (s[i] in ['A'..'Z']) then
+        if (s[i] in ['a'..'z']) or (s[i] in ['A'..'Z']) or (s[i] in ['0'..'9']) then
             temp := temp + s[i]
         else if not(s[i] in [#13, #10]) then
         begin
