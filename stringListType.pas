@@ -15,7 +15,7 @@ procedure add(var l : stringList; s : string);
  * Current implementation:
  * add to the last
  * TODO:
- * Do insertion sort for binary search
+ * Do sorting for binary search
  *)
 begin
     SetLength(l, Length(l) + 1);

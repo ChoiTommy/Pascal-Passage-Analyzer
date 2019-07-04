@@ -8,16 +8,19 @@ program passage_analyser_6A06;
  * number of sentences, reading time, number of
  * unique words in a passage.
  *}
-uses longStringType, stringListType, crt, FastConsole;
-const eos_marks = ['.', '?', '!'];
-      text_path = 'Text files/passage.txt';
-var textFileName : string;
-    t : Text;
-    passage : longString;
-    words, i : Integer;
-    uniqueWords : stringList;
+uses longStringType, stringListType, crt, FastConsole, sysutils;
+
+const eos_marks = ['.', '?', '!']; //punctuations that indicates the end of a sentence
+
+var textFileName : string; //user input of text file name (in .txt form)
+    t : Text; //variable stores the text file
+    passage : longString; //array of char that saves the whole passage
+    wordsCount, i : Integer;
+    uniqueWords : stringList; //list of unique words in the passage
+	fileExist : Boolean;
 
 function toMinute(r : Real): string;
+(*Convert a real number to minutes (1.0 means 1 minute)*)
 var m, s : string;
 begin
 	Str(trunc(r), m);
@@ -26,7 +29,14 @@ begin
 end;
 
 function countNoOfSentences(s : longString): Integer;
-//TODO !!!boss!!!
+(*
+ * Current problems:
+ * The definition of a sentence is not correct.
+ * Not all . means the end of a sentence (e.g
+ * U.S., no., a.m.).
+ * TODO:
+ * Rewrite it.
+ *)
 var i : Integer;
 begin
 	countNoOfSentences := 0;
@@ -41,7 +51,10 @@ function getListOfUniqueWords(s : longString): stringList;
  * Only words are being considered, other words
  * such as emails (treated as one word) or short
  * forms (e.g. U.S., a.k.a.) can't be added to
- * the list correctly.
+ * the list correctly. The processing time is
+ * long.
+ * TODO:
+ * Need optimization.
  *)
 var i : Integer;
 	temp : string;
@@ -66,41 +79,50 @@ begin
     readln(textFileName);
     WriteLn;
 
-    Assign(t, 'Text files/' + textFileName);
-    Reset(t);
-    readLongString(t, passage);
+	fileExist := FileExists('Text files/' + textFileName);
 
-    setScreenWidth(120);
-    clrscr;
-    GotoXY(1, 1);
-    writeLongString(passage);
+	if fileExist then
+	begin
+		Assign(t, 'Text files/' + textFileName);
+		Reset(t);
+		readLongString(t, passage);
 
-	WriteLn;
-	WriteLn('==========');
+		setScreenWidth(120);
 
-	Write('No. of characters: ');
-	WriteLn(Length(passage) - countInLongString(#10, passage) - countInLongString(#13, passage));
+		writeLongString(passage);
 
-	Write('No. of paragraphs: ');
-	WriteLn(countInLongString(#13 + #10, passage) + 1);
+		WriteLn;
+		WriteLn('==========');
 
-	Write('No. of sentences(not accurate): '); //Todo can't count dialogs
-	WriteLn(countNoOfSentences(passage));
+		Write('No. of characters: ');
+		WriteLn(Length(passage) - countInLongString(#10, passage) - countInLongString(#13, passage));
 
-	Write('No. of words: ');
-	words := countInLongString(' ', passage) + countInLongString(#13 + #10, passage) + 1 - countInLongString('-', passage);
-	WriteLn(words);
+		Write('No. of paragraphs: ');
+		WriteLn(countInLongString(#13 + #10, passage) + 1);
 
-	Write('Reading time (200 wpm/min): ');
-	WriteLn(toMinute(words / 200));
+		Write('No. of sentences(not accurate): '); //Todo can't count dialogs
+		WriteLn(countNoOfSentences(passage));
 
-    readln;
-	uniqueWords := getListOfUniqueWords(passage);
-	Write('No. of unique words: ');
-	WriteLn(size(uniqueWords));
-	for i := 0 to size(uniqueWords)-1 do
-		writeln(uniqueWords[i]);
+		Write('No. of words: ');
+		wordsCount := countInLongString(' ', passage) + countInLongString(#13 + #10, passage) + 1 - countInLongString('-', passage);
+		WriteLn(wordsCount);
 
-	ReadLn;
-	Close(t);
+		Write('Reading time (200 wpm/min): ');
+		WriteLn(toMinute(wordsCount / 200));
+
+		readln;
+		uniqueWords := getListOfUniqueWords(passage);
+		Write('No. of unique words: ');
+		WriteLn(size(uniqueWords));
+		for i := 0 to size(uniqueWords)-1 do
+			writeln(uniqueWords[i]);
+
+		ReadLn;
+		Close(t);
+	end
+	else
+	begin
+		WriteLn('No such file.');
+		ReadLn;
+	end;
 end.
