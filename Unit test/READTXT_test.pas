@@ -1,5 +1,5 @@
 program READTXT_test;
-uses longStr;
+uses longStringType;
 (*Current problems:
 * - '!', '?', ':', and many other punctuation marks are not considered
 * - U.S. and other words are treated as two sentences

@@ -75,15 +75,15 @@ begin
 end;
 
 begin
-    Write('Enter the name of your text file (abc.txt): ');
+    Write('Enter the name of your text file (test.txt): ');
     readln(textFileName);
     WriteLn;
 
-	fileExist := FileExists('Text files/' + textFileName);
+	fileExist := FileExists(textFileName);
 
 	if fileExist then
 	begin
-		Assign(t, 'Text files/' + textFileName);
+		Assign(t, textFileName);
 		Reset(t);
 		readLongString(t, passage);
 
@@ -116,7 +116,6 @@ begin
 		WriteLn(size(uniqueWords));
 		for i := 0 to size(uniqueWords)-1 do
 			writeln(uniqueWords[i]);
-
 		ReadLn;
 		Close(t);
 	end
