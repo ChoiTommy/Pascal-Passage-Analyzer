@@ -17,6 +17,7 @@ procedure writeLongString(s : longString);
 
 implementation
 var screen_width : Integer;
+
 procedure readLongString(var s : longString);
 (*Read long string in console*)
 var n : Integer;
@@ -54,7 +55,7 @@ var i : Integer;
 begin
     countInLongString := 0;
     for i := 0 to Length(S)-1 do
-        if s[i] = c then
+        if lowerCase(s[i]) = lowerCase(c) then
             countInLongString := countInLongString + 1;
 end;
 
@@ -64,12 +65,12 @@ var i, j : Integer;
     temp : string;
 begin
     countInLongString := 0;
-    for i := 0 to Length(S)-1 do
+    for i := 0 to Length(s)-1 do
     begin
         temp := '';
         for j := 1 to Length(t) do
             temp := temp + s[i+j-1];
-        if t = temp then
+        if lowerCase(t) = lowerCase(temp) then
             countInLongString := countInLongString + 1;
     end;
 end;
