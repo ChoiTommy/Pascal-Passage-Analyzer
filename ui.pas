@@ -4,7 +4,7 @@ interface
 uses crt;
 const default_textbackground = Black;
       default_textcolor = LightGray;
-      button_textbackground_unselected = LightGray;
+      button_textbackground_unselected = LightGray; //TODO reset color states instead of selected or unselected
       button_textbackground_selected = Red;
       button_textcolor_unselected = Black;
       button_textcolor_selected = LightGray;
@@ -24,6 +24,8 @@ procedure drawFromTxtFile(startX, startY : Integer; path : string);
 function getWindowWidth : Integer;
 procedure drawCheckBox(startX, startY : Integer; description : string; selected, checked : Boolean);
 procedure drawInputBox(startX, startY, width : Integer; description : string);
+procedure drawTextLabel(startX, startY : Integer; t : string);
+procedure drawTab(startX, startY, width, height : integer; s : string);
 
 implementation
 
@@ -41,40 +43,77 @@ begin
     y := height div 2 + 1;
     if selected then
     begin
+        resetDefaultColor(True, True);
+        for i := 1 to height do
+        begin
+            GotoXY(startX - 1, startY + i - 2);
+            for j := 1 to width do
+                Write(' ');
+        end;
         TextColor(button_textcolor_selected);
         TextBackground(button_textbackground_selected);
+        for i := 1 to height do
+        begin
+            GotoXY(startX, startY + i - 1);
+            temp := '';
+            j := 1;
+            while j <= width do
+            begin
+                if (y = i) and (x = j) then
+                begin
+                    temp := temp + s;
+                    j := j + Length(s);
+                end
+                else
+                begin
+                    temp := temp + ' ';
+                    j := j + 1;
+                end;
+            end;
+            Write(temp);
+            WriteLn;
+        end;
     end
     else
     begin
+        TextColor(button_textcolor_selected);
+        TextBackground(button_textbackground_selected);
+        for i := 1 to height do
+        begin
+            GotoXY(startX, startY + i - 1);
+            for j := 1 to width do
+                Write(' ');
+        end;
         TextColor(button_textcolor_unselected);
         TextBackground(button_textbackground_unselected);
+        for i := 1 to height do
+        begin
+            GotoXY(startX - 1, startY + i - 2);
+            temp := '';
+            j := 1;
+            while j <= width do
+            begin
+                if (y = i) and (x = j) then
+                begin
+                    temp := temp + s;
+                    j := j + Length(s);
+                end
+                else
+                begin
+                    temp := temp + ' ';
+                    j := j + 1;
+                end;
+            end;
+            Write(temp);
+            WriteLn;
+        end;
     end;
 
-    for i := 1 to height do
-    begin
-        GotoXY(startX, startY + i - 1);
-        temp := '';
-        j := 1;
-        while j <= width do
-        begin
-            if (y = i) and (x = j) then
-            begin
-                temp := temp + s;
-                j := j + Length(s);
-            end
-            else
-            begin
-                temp := temp + ' ';
-                j := j + 1;
-            end;
-        end;
-        Write(temp);
-        WriteLn;
-    end;
+
     resetDefaultColor(True, True);
 end;
 
-procedure drawMsgBox(startX, startY, width, height : integer; message : string);
+procedure drawMsgBox(startX, startY, width, height : integer; message : string);//TODO add shadow
 var i, j, x, y : Integer;
     temp : string;
 begin
@@ -160,7 +199,7 @@ begin
     resetDefaultColor(True, True);
 end;
 
-procedure drawInputBox(startX: Integer; startY: Integer; width: Integer; description: string);
+procedure drawInputBox(startX, startY: Integer; width: Integer; description: string);
 var total, i : Integer;
 begin
     GotoXY(startX-1, startY-1);
@@ -188,8 +227,71 @@ begin
         Write(' ');
 
     GotoXY(startX + Length(description), startY);
-    TextColor(default_textcolor);
-    TextBackground(default_textbackground);
+    resetDefaultColor(True, True);
+end;
+
+procedure drawTextLabel(startX, startY: Integer; t: string);
+var i : Integer;
+begin
+    GotoXY(startX - 1, startY - 1);
+    write('+');
+    for i := 1 to Length(t) do
+        Write('-');
+    write('+');
+
+    GotoXY(startX - 1, startY);
+    Write('|');
+    Write(t);
+    Write('|');
+
+    GotoXY(startX - 1, startY + 1);
+    write('+');
+    for i := 1 to Length(t) do
+        Write('-');
+    write('+');
+end;
+
+procedure drawTab(startX, startY, width, height : integer; s : string);
+var i, j, x, y : integer;
+    temp : string;
+begin
+    x := (width div 2 - Length(s) div 2) + 1;
+    y := height div 2 + 1;
+
+    TextColor(button_textcolor_unselected);
+    TextBackground(button_textbackground_unselected);
+
+    for i := 1 to height do
+    begin
+        GotoXY(startX, startY + i - 1);
+        temp := '';
+        j := 1;
+        while j <= width do
+        begin
+            if (y = i) and (x = j) then
+            begin
+                temp := temp + s;
+                j := j + Length(s);
+            end
+            else if (i = y) and (j = width) then
+            begin
+                temp := temp + '>';
+                j := j + 1;
+            end
+            else if (i = y) and (j = 1) then
+            begin
+                temp := temp + '<';
+                j := j + 1;
+            end
+            else
+            begin
+                temp := temp + ' ';
+                j := j + 1;
+            end;
+        end;
+        Write(temp);
+    end;
+    resetDefaultColor(True, True);
 end;
 
 end.

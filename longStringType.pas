@@ -13,8 +13,8 @@ function copy(s : longString; start : Integer): string;
 function castStringToLongString(s : string): longString;
 function castLongStringToString(s : longString): string;
 procedure setScreenWidth(a : Integer);
-procedure writeLongString(s : longString);
-procedure writeLongString(s : longString; target : string; var n : Integer);
+procedure writeLongString(startX, startY : Integer; s : longString);
+procedure writeLongString(startX, startY : Integer; s : longString; target : string; var n : Integer);
 
 implementation
 const words_set = ['A'..'Z', 'a'..'z', '0'..'9'];
@@ -135,17 +135,20 @@ begin
     screen_width := a;
 end;
 
-procedure writeLongString(s : longString);
+procedure writeLongString(startX, startY : Integer; s : longString);
 (* Write long string in passage format in the console
  * Current problems:
  * Only words are being considered in word wrapping,
  * other words such as emails (treated as one word)
  * will be seperated at the end of the line.
  *)
-var i, x : Integer;
+var i, x, a, b : Integer;
     temp : string;
 begin
     i := 0;
+    a := startX;
+    b := startY;
+    GotoXY(a, b);
     temp := '';
     while i < Length(s) do
     begin
@@ -153,10 +156,11 @@ begin
             temp := temp + s[i]
         else if not(s[i] in [#13, #10]) then
         begin
-            x := WhereX;
+            x := WhereX - startX;
             if x + Length(temp) > screen_width then
             begin
-                WriteLn;
+                b := b + 1;
+                GotoXY(a, b);
                 Write(temp);
             end
             else Write(temp);
@@ -165,19 +169,22 @@ begin
         end
         else if (s[i] = #13) and (s[i+1] = #10) then
         begin
-            WriteLn;
-            WriteLn;
+            b := b + 2;
+            GotoXY(a, b);
         end;
         i := i + 1;
     end;
 end;
 
-procedure writeLongString(s : longString; target : string; var n : Integer);
-var i, x : Integer;
+procedure writeLongString(startX, startY : Integer; s : longString; target : string; var n : Integer);
+var i, x, a, b : Integer;
     temp : string;
 begin
     i := 0;
     n := 0;
+    a := startX;
+    b := startY;
+    GotoXY(a, b);
     temp := '';
     while i < Length(s) do
     begin
@@ -185,7 +192,7 @@ begin
             temp := temp + s[i]
         else if not(s[i] in [#13, #10]) then
         begin
-            x := WhereX;
+            x := WhereX - startX;
             if lowerCase(target) = lowerCase(temp) then
             begin
                 n := n + 1;
@@ -194,7 +201,8 @@ begin
             end;
             if x + Length(temp) > screen_width then
             begin
-                WriteLn;
+                b := b + 1;
+                GotoXY(a, b);
                 Write(temp);
             end
             else Write(temp);
@@ -205,8 +213,8 @@ begin
         end
         else if (s[i] = #13) and (s[i+1] = #10) then
         begin
-            WriteLn;
-            WriteLn;
+            b := b + 2;
+            GotoXY(a, b);
         end;
         i := i + 1;
     end;
