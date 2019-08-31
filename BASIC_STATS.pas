@@ -1,4 +1,4 @@
-program passage_analyser_6A06;
+program BASIC_STATS;
 {*
  *           Pascal Passage Analyser
  * This program is created for analysing a passage

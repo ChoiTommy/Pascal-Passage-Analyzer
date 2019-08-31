@@ -15,12 +15,15 @@ const default_textbackground = Black;
       checkbox_textbackground_selected = LightGray;
       checkbox_textcolor_unselected = default_textcolor;
       checkbox_textbackground_unselected = default_textbackground;
+      inputbox_textbackground = LightGray;
+      inputbox_textcolor = Black;
 
 procedure drawButton(startX, startY, width, height : integer; s : string; selected : Boolean);
 procedure drawMsgBox(startX, startY, width, height : integer; message : string);
 procedure drawFromTxtFile(startX, startY : Integer; path : string);
 function getWindowWidth : Integer;
 procedure drawCheckBox(startX, startY : Integer; description : string; selected, checked : Boolean);
+procedure drawInputBox(startX, startY, width : Integer; description : string);
 
 implementation
 
@@ -155,6 +158,38 @@ begin
     else
         Write('[ ]' + '   ' + description);
     resetDefaultColor(True, True);
+end;
+
+procedure drawInputBox(startX: Integer; startY: Integer; width: Integer; description: string);
+var total, i : Integer;
+begin
+    GotoXY(startX-1, startY-1);
+    total := width + Length(description);
+
+    TextColor(inputbox_textcolor);
+    TextBackground(inputbox_textbackground);
+    for i := 1 to total do
+        Write(' ');
+
+    GotoXY(startX-1, startY);
+    Write(' ', description);
+    TextColor(default_textcolor);
+    TextBackground(default_textbackground);
+    for i := 1 to width do
+        write(' ');
+    TextColor(inputbox_textcolor);
+    TextBackground(inputbox_textbackground);
+        Write(' ');
+
+    GotoXY(startX-1, startY+1);
+    TextColor(inputbox_textcolor);
+    TextBackground(inputbox_textbackground);
+    for i := 1 to total do
+        Write(' ');
+
+    GotoXY(startX + Length(description), startY);
+    TextColor(default_textcolor);
+    TextBackground(default_textbackground);
 end;
 
 end.

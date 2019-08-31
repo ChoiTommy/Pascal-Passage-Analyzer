@@ -14,8 +14,14 @@ function castStringToLongString(s : string): longString;
 function castLongStringToString(s : longString): string;
 procedure setScreenWidth(a : Integer);
 procedure writeLongString(s : longString);
+procedure writeLongString(s : longString; target : string; var n : Integer);
 
 implementation
+const words_set = ['A'..'Z', 'a'..'z', '0'..'9'];
+      default_textbackground = Black;
+      default_textcolor = LightGray;
+      highlighted_textbackground = Yellow;
+      highlighted_textcolor = Black;
 var screen_width : Integer;
 
 procedure readLongString(var s : longString);
@@ -143,7 +149,7 @@ begin
     temp := '';
     while i < Length(s) do
     begin
-        if (s[i] in ['a'..'z']) or (s[i] in ['A'..'Z']) or (s[i] in ['0'..'9']) then
+        if (s[i] in words_set) then
             temp := temp + s[i]
         else if not(s[i] in [#13, #10]) then
         begin
@@ -154,6 +160,46 @@ begin
                 Write(temp);
             end
             else Write(temp);
+            Write(s[i]);
+            temp := '';
+        end
+        else if (s[i] = #13) and (s[i+1] = #10) then
+        begin
+            WriteLn;
+            WriteLn;
+        end;
+        i := i + 1;
+    end;
+end;
+
+procedure writeLongString(s : longString; target : string; var n : Integer);
+var i, x : Integer;
+    temp : string;
+begin
+    i := 0;
+    n := 0;
+    temp := '';
+    while i < Length(s) do
+    begin
+        if (s[i] in words_set) then
+            temp := temp + s[i]
+        else if not(s[i] in [#13, #10]) then
+        begin
+            x := WhereX;
+            if lowerCase(target) = lowerCase(temp) then
+            begin
+                n := n + 1;
+                TextColor(highlighted_textcolor);
+                TextBackground(highlighted_textbackground);
+            end;
+            if x + Length(temp) > screen_width then
+            begin
+                WriteLn;
+                Write(temp);
+            end
+            else Write(temp);
+            TextColor(default_textcolor);
+            TextBackground(default_textbackground);
             Write(s[i]);
             temp := '';
         end
