@@ -1,0 +1,2 @@
+1 //Generate unique words file each time you analyse a passage
+

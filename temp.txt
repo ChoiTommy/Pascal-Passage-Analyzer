@@ -153,3 +153,64 @@ begin
 
 	end;
 end;}
+
+
+-----------------------------------------------------------------------
+
+procedure writeLongString(startX, startY : Integer; s : longString);
+(* Write long string in passage format in the console
+ * Current problems:
+ * Only words are being considered in word wrapping,
+ * other words such as emails (treated as one word)
+ * will be seperated at the end of the line.
+ *)
+var i, x, a, b : Integer;
+    temp : string;
+begin
+    i := 0;
+    a := startX; // acts as wherex
+    b := startY;
+    GotoXY(a, b);
+    temp := '';
+    while i < Length(s) do
+    begin
+        if (s[i] in words_set) then
+            temp := temp + s[i]
+        else if not(s[i] in [#13, #10]) then
+        begin
+            x := a - startX;
+            if x + Length(temp) > screen_width then
+            begin
+                b := b + 1;
+                a := startX;
+                GotoXY(a, b);
+                Write(temp);
+                a := a + Length(temp) + 1;
+                Write(s[i]);
+            end
+            else if x + Length(temp) = screen_width then
+            begin
+                a := startX;
+                b := b + 1;
+                Write(temp);
+                GotoXY(a, b);
+                Write(s[i]);
+                a := a + 1;
+            end
+            else
+            begin
+                a := a + Length(temp) + 1;
+                Write(temp);
+                Write(s[i]);
+            end;
+            temp := '';
+        end
+        else if (s[i] = #13) and (s[i+1] = #10) then
+        begin
+            b := b + 2;
+            a := startX;
+            GotoXY(a, b);
+        end;
+        i := i + 1;
+    end;
+end;

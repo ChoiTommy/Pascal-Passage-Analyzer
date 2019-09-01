@@ -123,9 +123,9 @@ begin
 		Reset(t);
 		readLongString(t, passage);
 
-		setScreenWidth(120);
+		setScreenWidth(50);
 
-		writeLongString(passage);
+		writeLongString(1, 2, passage);
 
 		noOfChar := countNoOfChar(passage);
 		noOfPara := countNoOfPara(passage);
