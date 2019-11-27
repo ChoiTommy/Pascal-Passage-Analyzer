@@ -11,7 +11,6 @@ const default_textbackground = Black;
       button_textcolor_selected = LightGray;
       msgbox_background_color = LightGray;
       msgbox_textcolor = Black;
-      msgbox_border_char = '*';
       checkbox_textcolor_selected = Black;
       checkbox_textbackground_selected = LightGray;
       checkbox_textcolor_unselected = default_textcolor;
@@ -21,7 +20,7 @@ const default_textbackground = Black;
       //TODO add shadow color
 
 procedure drawButton(startX, startY, width, height : integer; s : string; selected : Boolean);
-procedure drawMsgBox(startX, startY, width, height : integer; message : string);
+procedure drawMsgBox(startX, startY, width, height : integer; message : string; border : Boolean; borderChar : Char);
 procedure drawFromTxtFile(startX, startY : Integer; path : string);
 function getWindowWidth : Integer;
 procedure drawCheckBox(startX, startY : Integer; description : string; selected, checked : Boolean);
@@ -61,7 +60,6 @@ begin
             temp := '';
             j := 1;
             while j <= width do
-            begin
                 if (y = i) and (x = j) then
                 begin
                     temp := temp + s;
@@ -72,7 +70,6 @@ begin
                     temp := temp + ' ';
                     j := j + 1;
                 end;
-            end;
             Write(temp);
             WriteLn;
         end;
@@ -95,7 +92,6 @@ begin
             temp := '';
             j := 1;
             while j <= width do
-            begin
                 if (y = i) and (x = j) then
                 begin
                     temp := temp + s;
@@ -106,7 +102,6 @@ begin
                     temp := temp + ' ';
                     j := j + 1;
                 end;
-            end;
             Write(temp);
             WriteLn;
         end;
@@ -114,12 +109,15 @@ begin
     resetDefaultColor(True, True);
 end;
 
-procedure drawMsgBox(startX, startY, width, height : integer; message : string);
+procedure drawMsgBox(startX, startY, width, height : integer; message : string; border : Boolean; borderChar : Char);
 var i, j, x, y : Integer;
     temp : string;
+    c : Char;
 begin
     TextColor(button_textcolor_selected);
     TextBackground(button_textbackground_selected);
+    if border then c := borderChar
+    else c := ' ';
     for i := 1 to height-1 do
     begin
         GotoXY(startX + width, startY + i);
@@ -142,7 +140,7 @@ begin
         while j <= width do
             if (i = 1) or (i = height) or (j = 1) or (j = width) then
             begin
-                temp := temp + msgbox_border_char;
+                temp := temp + c;
                 j := j + 1;
             end
             else if (x = j) and (y = i) then

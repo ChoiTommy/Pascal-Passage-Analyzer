@@ -65,7 +65,7 @@ var c : Char;
     t : Text;
 begin
     ClrScr;
-    drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, msgbox_text);
+    drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, msgbox_text, False, 'a');
     drawTextLabel(label_startX, label_startY, label_text);
     drawInputBox(inputbox_startX, inputbox_startY, inputbox_width, inputbox_text);
     cursorX := inputbox_startX + Length(inputbox_text);
@@ -94,7 +94,7 @@ begin
     ClrScr;
     cursoroff;
 
-    if textFileName = '' then textFileName := 'test.txt';
+    if textFileName = '' then textFileName := 'Passages/test.txt';
 	fileExist := FileExists(textFileName);
     if fileExist then
     begin
@@ -120,7 +120,7 @@ begin
     end
     else
     begin
-        drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, textFileName + ' not found.');
+        drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, textFileName + ' not found.', False, 'a');
         state := -1; //exit
         ReadLn;
     end;
@@ -214,7 +214,7 @@ begin
 
     position := 1;
     drawTab(tab_startX, tab_startY, tab_width, tab_height, 'No. of char');
-    drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, noOfCharString);
+    drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, noOfCharString, False, 'a');
     drawTextLabel(label_startX, label_startY, 'Left and right keys to view stats. Esc to exit.');
 
     repeat
@@ -231,31 +231,31 @@ begin
 				case position of
 					1 : begin
                             drawTab(tab_startX, tab_startY, tab_width, tab_height, 'No. of char');
-                            drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, noOfCharString);
+                            drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, noOfCharString, False, 'a');
                         end;
                     2 : begin
                             drawTab(tab_startX, tab_startY, tab_width, tab_height, 'No. of para');
-                            drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, noOfParaString);
+                            drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, noOfParaString, False, 'a');
                         end;
                     3 : begin
                             drawTab(tab_startX, tab_startY, tab_width, tab_height, 'No. of sent');
-                            drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, noOfSentString);
+                            drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, noOfSentString, False, 'a');
                         end;
                     4 : begin
                             drawTab(tab_startX, tab_startY, tab_width, tab_height, 'No. of words');
-                            drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, noOfWordsString);
+                            drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, noOfWordsString, False, 'a');
                         end;
                     5 : begin
                             drawTab(tab_startX, tab_startY, tab_width, tab_height, 'Reading time');
-                            drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, readingTimeString);
+                            drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, readingTimeString, False, 'a');
                         end;
                     6 : begin
                             drawTab(tab_startX, tab_startY, tab_width, tab_height, 'Reading score');
-                            drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, readingEaseScoreString);
+                            drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, readingEaseScoreString, False,'a');
                         end;
                     7 : begin
                             drawTab(tab_startX, tab_startY, tab_width, tab_height, 'No. of unique words');
-                            drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, noOfUniqueWordsString);
+                            drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, noOfUniqueWordsString, False, 'a');
                         end;
 				end;
 			end;
@@ -292,7 +292,7 @@ begin
     drawTextLabel(label_startX, label_startY, label_text);
     repeat
         writeLongString(7, passage);
-        drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, 'Type a word to search.');
+        drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, 'Type a word to search.', False, 'a');
         drawInputBox(inputbox_startX, inputbox_startY, inputbox_width, inputbox_description);
         cursoron;
         target := '';
@@ -322,7 +322,7 @@ begin
         begin
             writeLongString(7, passage, target, occurrence);
             Str(occurrence, occurrenceString);
-            drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, occurrenceString + ' occurrence(s)');
+            drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, occurrenceString + ' occurrence(s)', False, 'a');
             c := ReadKey;
             if c = #0 then c := ReadKey;
         end;

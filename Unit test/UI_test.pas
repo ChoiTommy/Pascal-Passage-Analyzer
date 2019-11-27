@@ -1,5 +1,5 @@
 program UI_test;
-uses crt, FastConsole;
+uses crt, FastConsole, ui;
 const default_textbackground = Black;
       default_textcolor = LightGray;
       button_textbackground_unselected = LightGray;
@@ -18,7 +18,7 @@ const default_textbackground = Black;
 * seleted colors, ...
 *)
 
-procedure resetDefaultColor(text, background: Boolean);
+{procedure resetDefaultColor(text, background: Boolean);
 begin
     if text then TextColor(default_textcolor);
     if background then TextBackground(default_textbackground);
@@ -119,16 +119,19 @@ begin
     else
         Write('[ ]' + '   ' + description);
     resetDefaultColor(True, True);
-end;
+end;}
 
 begin
     cursoroff;
     {drawButton(2, 2, 70, 20, 'Nerd', False);
     Readln;
-    drawButton(2, 2, 70, 20, 'Nerd', True);}
+    drawButton(2, 2, 70, 20, 'Nerd', True);
     drawMsgBox(5, 3, 50, 11, 'Are you nerd?');
     drawButton(5+5, 3+11-3, 5, 1, 'Yes', False);
     drawButton(5+5+33, 3+11-3, 5, 1, 'No', True);
-    drawCheckBox(5, 20, 'I''m nerd.', True, False);
+    drawCheckBox(5, 20, 'I''m nerd.', True, False);}
+
+    drawButton(3, 3, 10, 1, 'ABCD', False);
+
     ReadLn;
 end.
