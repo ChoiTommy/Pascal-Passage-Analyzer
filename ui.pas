@@ -37,9 +37,13 @@ const default_textbackground = Black;
       tab_textbackground = LightGray;
       tab_textcolor = Black;
 
+      //draw ascii arts colors
+      art_textbackground = LightGray;
+      art_textcolor = Black;
+
 procedure drawButton(startX, startY, width, height : integer; s : string; state : Integer);
 procedure drawMsgBox(startX, startY, width, height : integer; message : string; messageY : Integer);
-procedure drawFromTxtFile(startX, startY : Integer; path : string);
+procedure drawFromTxtFile(startX, startY : Integer; path : string; withoutModification, invertedColors : Boolean);
 function getWindowWidth : Integer;
 procedure drawCheckBox(startX, startY : Integer; description : string; selected, checked : Boolean);
 procedure drawInputBox(startX, startY: Integer; boxWidth: Integer; message, hint: string);
@@ -173,21 +177,39 @@ begin
     resetDefaultColors(True, True);
 end;
 
-procedure drawFromTxtFile(startX, startY : Integer; path : string);
+procedure drawFromTxtFile(startX, startY : Integer; path : string; withoutModification, invertedColors : Boolean);
 (*Mainly use for drawing ASCII arts*)
 var t : Text;
     i : Integer;
-    s : string;
+    c : Char;
+    a, b : Byte;
 begin
     assign(t, path);
 	reset(t);
 	i := 0;
+
+    GotoXY(startX, startY);
 	while not(eof(t)) do
 	begin
-		ReadLn(t, s);
-		GotoXY(startX, startY + i);
-		Write(s);
+        while not eoln(t) do
+        begin
+            Read(t, c);
+            if (not withoutModification) and (c <> ' ') then
+            begin
+                if not invertedColors then setColors(art_textbackground, art_textcolor);
+                Write(' ');
+                if not invertedColors then resetDefaultColors(True, True);
+            end
+            else
+            begin
+                if invertedColors then setColors(art_textbackground, art_textcolor);
+                Write(' ');
+                if invertedColors then resetDefaultColors(True, True);
+            end;
+        end;
+        ReadLn(t);
 		i := i + 1;
+        GotoXY(startX, startY + i);
 	end;
 	Close(t);
 end;
