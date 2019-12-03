@@ -12,7 +12,7 @@ program main;
 
 uses crt, ui, stringListType, sysutils, longStringType, passageAnalyser, FastConsole;
 
-const window_width = 130; //console window width
+const window_width = 120; //console window width
       window_height = 30; //console window height
 
 var i : Integer;
@@ -55,10 +55,12 @@ var c : Char;
 	textFileName : string;
 begin
     ClrScr;
-	drawFromTxtFile(3, 3, 'Text files/banner.txt', False, True);
-    {drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, msgbox_text, -1);
-    drawInputBox(inputbox_startX, inputbox_startY, inputbox_width, inputbox_text, '');
-    cursorX := inputbox_startX + Length(inputbox_text);
+	drawFromTxtFile(29, 3, 'Text files/banner.txt', False, False); //TODO declare constants for positioning
+    drawMsgBox(29, 12, 62, 15, '', -1);
+    drawInputBox(37, 14, 30, 'File name', 'default.txt');
+    drawButton(60, 25, 10, 1, 'Quit', 1);
+    drawButton(74, 25, 10, 1, 'OK', 1);
+    {cursorX := inputbox_startX + Length(inputbox_text);
     cursorY := inputbox_startY;
     textFileName := '';
     cursoron;
