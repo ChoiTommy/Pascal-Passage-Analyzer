@@ -35,19 +35,34 @@ end;
 
 procedure importTextFileScreen(var state : Integer);
 (*Let user to input the file name of the passage*)
-const msgbox_width = 70;
-      msgbox_height = 20;
+const banner_startX = (window_width - 62) div 2;
+      banner_startY = 3;
+      banner_path = 'Text files/banner.txt';
+
+      msgbox_width = 62;
+      msgbox_height = 15;
       msgbox_startX = (window_width-msgbox_width) div 2;
-      msgbox_startY = (window_height-msgbox_height) div 2;
-      msgbox_text = 'Rename your file as test.txt or type your file name here.';
-      inputbox_text = 'File name: ';
-      inputbox_width = 20; //no. of characters to be shown in the inputbox
-      inputbox_startX = (msgbox_width - (inputbox_width + Length(inputbox_text))) div 2 + msgbox_startX;
-      inputbox_startY = msgbox_startY + msgbox_height div 2  + msgbox_height div 4;
+      msgbox_startY = 12;
+      //msgbox_text = 'Rename your file as test.txt or type your file name here.';
+
+      inputbox_text = 'File name';
+      inputbox_boxWidth = 32; //no. of characters to be shown in the inputbox
+      inputbox_startX = (msgbox_width - (inputbox_boxWidth + Length(inputbox_text) + 2)) div 2 + msgbox_startX;
+      inputbox_startY = msgbox_startY + msgbox_height div 4;
+      inputbox_hint = 'default.txt';
+
+      button_width = 10;
+      button_height = 1;
+      button_quit_startX = 60;
+      button_quit_startY = 23;
+      button_ok_startX = 74;
+      button_ok_startY = button_quit_startY;
+
       valid_file_name_char = ['0'..'9', 'a'..'z', 'A'..'Z', '.', ' ', '/']; //characters that are allowed to type
-      label_text = 'Just press enter if you passage file name is ''test.txt'' or you''ve finished typing.';
+      {label_text = 'Just press enter if you passage file name is ''test.txt'' or you''ve finished typing.';
       label_startX = window_width div 2 - Length(label_text) div 2;
-      label_startY = 28;
+      label_startY = 28;}
+
 var c : Char;
     cursorX, cursorY : Integer;
     fileExist : Boolean;
@@ -55,11 +70,11 @@ var c : Char;
 	textFileName : string;
 begin
     ClrScr;
-	drawFromTxtFile(29, 3, 'Text files/banner.txt', False, False); //TODO declare constants for positioning
-    drawMsgBox(29, 12, 62, 15, '', -1);
-    drawInputBox(37, 14, 30, 'File name', 'default.txt');
-    drawButton(60, 25, 10, 1, 'Quit', 1);
-    drawButton(74, 25, 10, 1, 'OK', 1);
+	drawFromTxtFile(banner_startX, banner_startY, banner_path, False, False);
+    drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, '', -1);
+    drawInputBox(inputbox_startX, inputbox_startY, inputbox_boxWidth, inputbox_text, inputbox_hint);
+    drawButton(button_quit_startX, button_quit_startY, button_width, button_height, 'Quit', 1);
+    drawButton(button_ok_startX, button_ok_startY, button_width, button_height, 'OK', 1);
     {cursorX := inputbox_startX + Length(inputbox_text);
     cursorY := inputbox_startY;
     textFileName := '';
