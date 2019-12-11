@@ -46,7 +46,7 @@ procedure drawMsgBox(startX, startY, width, height : integer; message : string; 
 procedure drawFromTxtFile(startX, startY : Integer; path : string; withoutModification, invertedColors : Boolean);
 function getWindowWidth : Integer;
 procedure drawCheckBox(startX, startY : Integer; description : string; selected, checked : Boolean);
-procedure drawInputBox(startX, startY: Integer; boxWidth: Integer; message, hint: string);
+procedure drawInputBox(startX, startY: Integer; boxWidth: Integer; message, hint: string; typing : Boolean);
 procedure drawTab(startX, startY, width, height : integer; s : string);
 
 implementation
@@ -243,11 +243,12 @@ begin
     resetDefaultColors(True, True);
 end;
 
-procedure drawInputBox(startX, startY: Integer; boxWidth: Integer; message, hint: string);
+procedure drawInputBox(startX, startY: Integer; boxWidth: Integer; message, hint: string; typing : Boolean);
 var i, j : Integer;
 begin
     cursoroff;
     setColors(inputbox_textbackground, inputbox_textcolor);
+    if typing then hint := '';
     for i := 1 to 3 do
     begin
         GotoXY(startX, startY + i - 1);
@@ -261,6 +262,7 @@ begin
     for i := 1 to boxWidth - Length(hint) do
         Write(' ');
     resetDefaultColors(True, True);
+    cursoron;
 end;
 
 procedure drawTab(startX, startY, width, height : Integer; s : string);

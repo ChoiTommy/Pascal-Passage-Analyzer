@@ -16,6 +16,10 @@ const window_width = 120; //console window width
       window_height = 30; //console window height
 
 var i : Integer;
+    passage : longString; //array of characters storing the passage
+    noOfSent, noOfWords : Integer;
+    noOfCharString, noOfParaString, noOfSentString, noOfWordsString, readingTimeString, readingEaseScoreString, noOfUniqueWordsString : string;
+    uniqueWords : stringList; //array list storing unique words
 
 procedure checkScreenWidthScreen(var state : Integer);
 (*write and check WhereX at the same time to check if the screen width is 120*)
@@ -59,9 +63,6 @@ const banner_startX = (window_width - 62) div 2;
       button_ok_startY = button_quit_startY;
 
       valid_file_name_char = ['0'..'9', 'a'..'z', 'A'..'Z', '.', ' ', '/']; //characters that are allowed to type
-      {label_text = 'Just press enter if you passage file name is ''test.txt'' or you''ve finished typing.';
-      label_startX = window_width div 2 - Length(label_text) div 2;
-      label_startY = 28;}
 
 var c : Char;
     cursorX, cursorY : Integer;
@@ -72,19 +73,23 @@ begin
     ClrScr;
 	drawFromTxtFile(banner_startX, banner_startY, banner_path, False, False);
     drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, '', -1);
-    drawInputBox(inputbox_startX, inputbox_startY, inputbox_boxWidth, inputbox_text, inputbox_hint);
+    drawInputBox(inputbox_startX, inputbox_startY, inputbox_boxWidth, inputbox_text, inputbox_hint, False);
     drawButton(button_quit_startX, button_quit_startY, button_width, button_height, 'Quit', 1);
-    drawButton(button_ok_startX, button_ok_startY, button_width, button_height, 'OK', 1);
-    {cursorX := inputbox_startX + Length(inputbox_text);
-    cursorY := inputbox_startY;
+    drawButton(button_ok_startX, button_ok_startY, button_width, button_height, 'OK', 0);
+
+    cursorX := inputbox_startX + Length(inputbox_text) + 3;
+    cursorY := inputbox_startY + 1;
+    GotoXY(cursorX, cursorY);
     textFileName := '';
     cursoron;
     repeat
         c := ReadKey;
         if c = #0 then c := ReadKey
-        else if (c in valid_file_name_char) and (Length(textFileName) < inputbox_width) then
+        else if (c in valid_file_name_char) and (Length(textFileName) < inputbox_boxWidth) then
         begin
             textFileName := textFileName + c;
+            if (textFileName <> '') and (Length(textFileName) = 1) then
+                drawInputBox(inputbox_startX, inputbox_startY, inputbox_boxWidth, inputbox_text, inputbox_hint, True);
             GotoXY(cursorX, cursorY);
             Write(c);
             cursorX := cursorX + 1;
@@ -94,14 +99,16 @@ begin
             Delete(textFileName, Length(textFileName), 1);
             cursorX := cursorX - 1;
             GotoXY(cursorX, cursorY);
-            Write(' ');
+            if textFileName = '' then
+                drawInputBox(inputbox_startX, inputbox_startY, inputbox_boxWidth, inputbox_text, inputbox_hint, False)
+            else Write(' ');
             GotoXY(cursorX, cursorY);
         end;
     until c = #13;
     ClrScr;
-    cursoroff;}
+    cursoroff;
 
-    {if textFileName = '' then textFileName := 'Passages/test.txt';
+    if textFileName = '' then textFileName := 'default.txt';
 	fileExist := FileExists(textFileName);
     if fileExist then
     begin
@@ -130,7 +137,7 @@ begin
         drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, textFileName + ' not found.', -1);
         state := -1; //exit
         ReadLn;
-    end;}
+    end;
 end;
 
 begin
