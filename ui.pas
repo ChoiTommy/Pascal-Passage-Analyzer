@@ -152,6 +152,7 @@ begin
             end;
         end;
     resetDefaultColors(True, True);
+    cursoron;
 end;
 
 procedure drawMsgBox(startX, startY, width, height : integer; message : string; messageY : Integer);
@@ -203,7 +204,7 @@ begin
             else
             begin
                 if invertedColors then setColors(art_textbackground, art_textcolor);
-                Write(' ');
+                Write(c);
                 if invertedColors then resetDefaultColors(True, True);
             end;
         end;
