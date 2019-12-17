@@ -9,17 +9,18 @@ program main;
  * unique words in a passage. It can also count and
  * find a specific words in the passage.
  *}
-
+//TODO set colors for buttons or background after finishing coding
 uses crt, ui, stringListType, sysutils, longStringType, passageAnalyser, FastConsole;
 
 const window_width = 120; //console window width
       window_height = 30; //console window height
 
-var state : Integer;
+var state, front, i : Integer;
     passage : longString; //array of characters storing the passage
     noOfSent, noOfWords : Integer;
     noOfCharString, noOfParaString, noOfSentString, noOfWordsString, readingTimeString, readingEaseScoreString, noOfUniqueWordsString : string;
     uniqueWords : stringList; //array list storing unique words
+    a : passageArray;
 
 procedure checkScreenWidthScreen(var state : Integer);
 (*write and check WhereX at the same time to check if the screen width is 120*)
@@ -45,6 +46,22 @@ begin
 		state := -1; //exit
 	end
     else state := 0; //advance to importTextFileScreen()
+end;
+
+procedure writePassage;
+begin
+    Window(1, 1, 74, 29);
+    ClrScr;
+    GotoXY(1, 2);
+    if Length(a) > window_height-2 then
+    begin
+        for i := 0 to window_height-2-1 do
+            WriteLn(a[i]);
+            front := 0;
+        end
+    else
+        for i := 0 to Length(a)-1 do
+            WriteLn(a[i]);
 end;
 
 procedure importTextFileScreen(var state : Integer);
@@ -98,7 +115,7 @@ begin
         if c = #0 then
         begin
             c := ReadKey;
-            if (c = #77) or (c = #75) then
+            if (c = #77) or (c = #75) then  //switch between quit and ok
             begin
                 case buttonPos of
                     0: drawButton(button_quit_startX, button_quit_startY, button_width, button_height, 'Quit', 0);
@@ -115,7 +132,7 @@ begin
                 GotoXY(cursorX, cursorY);
             end
         end
-        else if (c in valid_file_name_char) and (Length(textFileName) < inputbox_boxWidth) then
+        else if (c in valid_file_name_char) and (Length(textFileName) < inputbox_boxWidth) then //TODO handle cases when length of typed text is greater than box width
         begin
             textFileName := textFileName + c;
             if (textFileName <> '') and (Length(textFileName) = 1) then
@@ -124,7 +141,7 @@ begin
             Write(c);
             cursorX := cursorX + 1;
         end
-        else if (c = #8) and (Length(textFileName) > 0) then
+        else if (c = #8) and (Length(textFileName) > 0) then //backspace
         begin
             Delete(textFileName, Length(textFileName), 1);
             cursorX := cursorX - 1;
@@ -135,7 +152,8 @@ begin
             GotoXY(cursorX, cursorY);
         end;
     until c = #13;
-    if buttonPos = 0 then state := -1
+
+    if buttonPos = 0 then state := -1 //quit
     else
     begin
         ClrScr;
@@ -162,13 +180,16 @@ begin
             uniqueWords := getListOfUniqueWords(passage);
             Str(size(uniqueWords), noOfUniqueWordsString);
             generateUniqueWordsTxtFile(uniqueWords);
-
+            ClrScr;
+            setScreenWidth(73);
+            splitLongStringToArray(passage, a);
+            writePassage;
             state := 1; //advance to mainScreen()
         end
         else
         begin
             drawFromTxtFile(banner_startX, banner_startY, banner_path, False, False);
-            drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, textFileName + ' not found. Press Enter to exit.', -1);
+            drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, textFileName + ' not found. Press Enter to exit.', -1); //TODO add two more buttons here
             state := -1; //exit
             readln;
         end;
@@ -176,16 +197,277 @@ begin
 end;
 
 procedure mainScreen(var state : Integer);
-const banner_startX = 76;
+(*two windows*)
+const banner_startX = 2; //2nd window
       banner_startY = 1;
       banner_path = 'Text files/mainScreenBanner.txt';
+
+      button_stats_width = 23;
+      button_stats_height = 5;
+      button_stats_startX = 12; //2nd window
+      button_stats_startY = 8;
+      button_stats_text = 'Stats';
+
+      button_find_width = button_stats_width;
+      button_find_height = button_stats_height;
+      button_find_startX = 12; //2nd window
+      button_find_startY = 18;
+      button_find_text = 'Find';
+
+      button_settings_width = 15;
+      button_settings_height = 1;
+      button_settings_startX = 7; //2nd window
+      button_settings_startY = 27;
+      button_settings_text = 'Settings';
+
+      button_quit_width = 15;
+      button_quit_height = 1;
+      button_quit_startX = 27; //2nd window
+      button_quit_startY = 27;
+      button_quit_text = 'Quit';
+
+var position : Integer;
+    c : Char;
+begin
+    //2nd window
+    Window(75, 1, 120, 30);
+    ClrScr;
+    cursoroff;
+    drawFromTxtFile(banner_startX, banner_startY, banner_path, True, False);
+    position := 1;
+    drawButton(button_stats_startX, button_stats_startY, button_stats_width, button_stats_height, button_stats_text, 1);
+    drawButton(button_find_startX, button_find_startY, button_find_width, button_find_height, button_find_text, 0);
+    drawButton(button_settings_startX, button_settings_startY, button_settings_width, button_settings_height, button_settings_text, 0);
+    drawButton(button_quit_startX, button_quit_startY, button_quit_width, button_quit_height, button_quit_text, 0);
+
+    repeat
+	  	c := ReadKey;
+		if c = #0 then
+		begin
+			c := ReadKey;
+			if (c = #72) or (c = #80) then
+			begin
+                Window(75, 1, 120, 30);
+				case position of
+					1 : drawButton(button_stats_startX, button_stats_startY, button_stats_width, button_stats_height, button_stats_text, 0);
+                    2 : drawButton(button_find_startX, button_find_startY, button_find_width, button_find_height, button_find_text, 0);
+                    3 : drawButton(button_settings_startX, button_settings_startY, button_settings_width, button_settings_height, button_settings_text, 0);
+                    4 : drawButton(button_quit_startX, button_quit_startY, button_quit_width, button_quit_height, button_quit_text, 0);
+				end;
+				case c of
+                    #72 : if position = 1 then position := 4 else position := position - 1;
+                    #80 : if position = 4 then position := 1 else position := position + 1;
+				end;
+				case position of
+					1 : drawButton(button_stats_startX, button_stats_startY, button_stats_width, button_stats_height, button_stats_text, 1);
+                    2 : drawButton(button_find_startX, button_find_startY, button_find_width, button_find_height, button_find_text, 1);
+                    3 : drawButton(button_settings_startX, button_settings_startY, button_settings_width, button_settings_height, button_settings_text, 1);
+                    4 : drawButton(button_quit_startX, button_quit_startY, button_quit_width, button_quit_height, button_quit_text, 1);
+				end;
+			end
+            else if (c = #81) and (Length(a) > window_height-2) and (front + 27 < Length(a)-1) then
+            begin
+                Window(1, 1, 74, 29);
+                GotoXY(1, 2);
+                DelLine;
+                front := front + 1;
+                GotoXY(1, 29);
+                WriteLn(a[front + 27]);
+            end
+            else if (c = #73) and (Length(a) > window_height-2) and (front > 0) then
+            begin
+                Window(1, 1, 74, 29);
+                GotoXY(1, 2);
+                InsLine;
+                front := front - 1;
+                WriteLn(a[front]);
+            end;
+		end;
+	until c = #13;
+    Window(75, 1, 120, 30);
+    case position of
+		1 : drawButton(button_stats_startX, button_stats_startY, button_stats_width, button_stats_height, button_stats_text, 2);
+        2 : drawButton(button_find_startX, button_find_startY, button_find_width, button_find_height, button_find_text, 2);
+        3 : drawButton(button_settings_startX, button_settings_startY, button_settings_width, button_settings_height, button_settings_text, 2);
+        4 : drawButton(button_quit_startX, button_quit_startY, button_quit_width, button_quit_height, button_quit_text, 2);
+	end;
+    Delay(300); //animation
+    case position of
+		1 : drawButton(button_stats_startX, button_stats_startY, button_stats_width, button_stats_height, button_stats_text, 1);
+        2 : drawButton(button_find_startX, button_find_startY, button_find_width, button_find_height, button_find_text, 1);
+        3 : drawButton(button_settings_startX, button_settings_startY, button_settings_width, button_settings_height, button_settings_text, 1);
+        4 : drawButton(button_quit_startX, button_quit_startY, button_quit_width, button_quit_height, button_quit_text, 1);
+	end;
+    Delay(200);
+    cursoron;
+    state := position + 1;
+end;
+
+procedure statsScreen(var state : Integer);
+(*show some basic statistics of the passage*)
+(*A banner is missing currently*)
+const title_path = 'Text files/stats_title.txt';
+      margin = 1;
+      tab_width = 21;
+      tab_height = 3;
+      tab_startX = 18;
+      tab_startY = 7;
+
+      msgbox_width = tab_width;
+      msgbox_height = 12;
+      msgbox_startX = tab_startX;
+      msgbox_startY = 6 + tab_height + 3;
+
+var position: Integer;
+    c : Char;
+begin
+    Window(75, 1, 120, 30);
+    ClrScr;
+    cursoroff;
+    //drawFromTxtFile(1, 1, title_path); //TODO find a new ascii art
+
+    position := 1;
+    Window(75, 1, 120, 30);
+    drawTab(tab_startX, tab_startY, tab_width, tab_height, 'No. of char');
+    drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, noOfCharString, -1);
+
+    repeat
+	  	c := ReadKey;
+		if c = #0 then
+		begin
+			c := ReadKey;
+			if (c = #75) or (c = #77) then
+			begin
+                Window(75, 1, 120, 30);
+				case c of
+					#75 : if position = 1 then position := 7 else position := position - 1;
+					#77 : if position = 7 then position := 1 else position := position + 1;
+				end;
+				case position of
+					1 : begin
+                            drawTab(tab_startX, tab_startY, tab_width, tab_height, 'No. of char');
+                            drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, noOfCharString, -1);
+                        end;
+                    2 : begin
+                            drawTab(tab_startX, tab_startY, tab_width, tab_height, 'No. of para');
+                            drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, noOfParaString, -1);
+                        end;
+                    3 : begin
+                            drawTab(tab_startX, tab_startY, tab_width, tab_height, 'No. of sent');
+                            drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, noOfSentString, -1);
+                        end;
+                    4 : begin
+                            drawTab(tab_startX, tab_startY, tab_width, tab_height, 'No. of words');
+                            drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, noOfWordsString, -1);
+                        end;
+                    5 : begin
+                            drawTab(tab_startX, tab_startY, tab_width, tab_height, 'Reading time');
+                            drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, readingTimeString, -1);
+                        end;
+                    6 : begin
+                            drawTab(tab_startX, tab_startY, tab_width, tab_height, 'Reading score');
+                            drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, readingEaseScoreString, -1);
+                        end;
+                    7 : begin
+                            drawTab(tab_startX, tab_startY, tab_width, tab_height, 'No. of unique words');
+                            drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, noOfUniqueWordsString, -1);
+                        end;
+				end;
+			end
+            else if (c = #81) and (Length(a) > window_height-2) and (front + 27 < Length(a)-1) then
+            begin
+                Window(1, 1, 74, 29);
+                GotoXY(1, 2);
+                DelLine;
+                front := front + 1;
+                GotoXY(1, 29);
+                WriteLn(a[front + 27]);
+            end
+            else if (c = #73) and (Length(a) > window_height-2) and (front > 0) then
+            begin
+                Window(1, 1, 74, 29);
+                GotoXY(1, 2);
+                InsLine;
+                front := front - 1;
+                WriteLn(a[front]);
+            end;
+		end;
+	until c = #27;
+    state := 1;
+end;
+
+procedure findScreen(var state : Integer); //not yet finished, still in old version
+(*
+ * Find and highlight a specific word
+ * TODO: rewrite it to search not just only a word, maybe a phrase
+ *)
+const title_path = 'Text files/find_title.txt';
+      inputbox_startX = 85 + 5;
+      inputbox_startY = 7;
+      inputbox_width = 16;
+      inputbox_description = 'Target: ';
+      valid_search_target = ['a'..'z', 'A'..'Z'];
+      msgbox_width = Length(inputbox_description) + inputbox_width;
+      msgbox_height = 15;
+      msgbox_startX = inputbox_startX;
+      msgbox_startY = inputbox_startY + 3 + 1;
+
+var target, occurrenceString : string;
+    cursorX, cursorY, occurrence : Integer;
+    c : Char;
+begin
+    Window(1, 1, 120, 30);
+    ClrScr;
+    drawFromTxtFile(1, 1, title_path, True, False);
+    setScreenWidth(85);
+    repeat
+        writeLongString(7, passage, '', occurrence);
+        drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, 'Type a word to search.', -1);
+        drawInputBox(inputbox_startX, inputbox_startY, inputbox_width, inputbox_description, '', False);
+        cursoron;
+        target := '';
+        cursorX := inputbox_startX + Length(inputbox_description);
+        cursorY := inputbox_startY;
+        repeat
+            c := ReadKey;
+            if c = #0 then c := ReadKey
+            else if (c in valid_search_target) and (Length(target) < inputbox_width) then
+            begin
+                target := target + c;
+                GotoXY(cursorX, cursorY);
+                Write(c);
+                cursorX := cursorX + 1;
+            end
+            else if (c = #8) and (Length(target) > 0) then
+            begin
+                Delete(target, Length(target), 1);
+                cursorX := cursorX - 1;
+                GotoXY(cursorX, cursorY);
+                Write(' ');
+                GotoXY(cursorX, cursorY);
+            end;
+        until (c = #13) and (target <> '') or (c = #27);
+        cursoroff;
+        if c = #13 then
+        begin
+            writeLongString(7, passage, target, occurrence);
+            Str(occurrence, occurrenceString);
+            drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, occurrenceString + ' occurrence(s)', -1);
+            c := ReadKey;
+            if c = #0 then c := ReadKey;
+        end;
+    until c = #27;
+    ClrScr;
+    writePassage;
+    state := 1;
+end;
+
+procedure settingsScreen(var state: Integer);
 begin
     ClrScr;
-    setScreenWidth(74);
-    writeLongString(1, passage);
-    drawFromTxtFile(banner_startX, banner_startY, banner_path, True, False);
-    readln;
-    state := -1;
+    WriteLn('under construction');
+    ReadLn;
+    state := 1;
 end;
 
 begin
@@ -194,10 +476,9 @@ begin
 	  	case state of
 		    0 : importTextFileScreen(state);
             1 : mainScreen(state);
-            {2 : statsScreen(state);
+            2 : statsScreen(state);
             3 : findScreen(state);
-            4 : settingsScreen(state);}
+            4 : settingsScreen(state);
 		end;
 	until (state = 5) or (state = -1);
-
 end.

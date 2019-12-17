@@ -10,10 +10,10 @@ const default_textbackground = Black;
       button_textbackground_normal = LightGray; //TODO set attractive colors
       button_textbackground_normal_shadow = Red;
       button_textcolor_normal = Black;
-      button_textbackground_selected = Red;
+      button_textbackground_selected = Blue;
       button_textbackground_selected_shadow = button_textbackground_normal_shadow;
       button_textcolor_selected = LightGray;
-      button_textbackground_clicked = Red;
+      button_textbackground_clicked = Blue;
       button_textcolor_clicked = Black;
 
       //message box colors
@@ -72,7 +72,6 @@ procedure drawButton(startX, startY, width, height : integer; s : string; state 
  *)
 var i, j, x, y : integer;
 begin
-    cursoroff;
     x := width div 2 - Length(s) div 2;
     y := height div 2;
     GotoXY(startX, startY);
@@ -152,7 +151,6 @@ begin
             end;
         end;
     resetDefaultColors(True, True);
-    cursoron;
 end;
 
 procedure drawMsgBox(startX, startY, width, height : integer; message : string; messageY : Integer);

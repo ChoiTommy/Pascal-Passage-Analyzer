@@ -3,6 +3,8 @@ unit longStringType;
 interface
 uses crt;
 type longString = array of Char;
+     passageArray = array of string;
+
 procedure readLongString(var s : longString);
 procedure readLongString(var t : Text; var s : longString);
 function countInLongString(c : Char; s : longString) : Integer;
@@ -13,7 +15,7 @@ function copy(s : longString; start : Integer): string;
 function castStringToLongString(s : string): longString;
 function castLongStringToString(s : longString): string;
 procedure setScreenWidth(a : Integer);
-procedure writeLongString(startY : Integer; s : longString);
+procedure splitLongStringToArray(s : longString; var a : passageArray);
 procedure writeLongString(startY : Integer; s : longString; target : string; var n : Integer);
 
 implementation
@@ -42,16 +44,32 @@ end;
 
 procedure readLongString(var t : Text; var s : longString);
 (*Read long string in a text file*)
+(*now hard coded, needed to be rewritten*)
 var n : Integer;
     c : Char;
 begin
     n := 0;
     while not EOF(t) do
     begin
-        n := n + 1;
-        SetLength(s, n);
         Read(t, c);
-        s[n-1] := c;
+        if c = #13 then
+        begin
+            n := n + 2;
+            SetLength(s, n);
+            s[n-2] := #13;
+            s[n-1] := #10;
+            while (c = #13) or (c = #10) do
+                Read(t, c);
+            n := n + 1;
+            SetLength(s, n);
+            s[n-1] := c;
+        end
+        else
+        begin
+            n := n + 1;
+            SetLength(s, n);
+            s[n-1] := c;
+        end;
     end;
 end;
 
@@ -135,9 +153,9 @@ begin
     screen_width := a;
 end;
 
-procedure writeLongString(startY : Integer; s : longString);
+procedure splitLongStringToArray(s : longString; var a : passageArray);
 (*
- * Write long string in passage format in the console
+ * Split long string to an array of string with max length = screen_width
  * Current problems:
  * Only words are being considered in word wrapping,
  * other words such as emails (treated as one word)
@@ -145,32 +163,40 @@ procedure writeLongString(startY : Integer; s : longString);
  * It can only start printing at (1, startY) for my
  * convenience.
  *)
-var i, x : Integer;
+var i, x, n : Integer;
     temp : string;
 begin
     i := 0;
-    GotoXY(1, startY);
     temp := '';
+    n := 1;
+    SetLength(a, n);
+    a[n-1] := '';
     while i < Length(s) do
     begin
         if (s[i] in words_set) then
             temp := temp + s[i]
         else if not(s[i] in [#13, #10]) then
         begin
-            x := WhereX - 1;
+            x := Length(a[n-1]) - 1;
             if x + Length(temp) > screen_width then
             begin
-                WriteLn;
-                Write(temp);
-            end
-            else Write(temp);
-            Write(s[i]);
+                //WriteLn;
+                //Write(temp);
+                n := n + 1;
+                SetLength(a, n);
+                a[n-1] := '';
+            end;
+            //else Write(temp);
+            //Write(s[i]);
+            a[n-1] := a[n-1] + temp + s[i];
             temp := '';
         end
         else if (s[i] = #13) and (s[i+1] = #10) then
         begin
-            WriteLn;
-            WriteLn;
+            //WriteLn;
+            //WriteLn;
+            n := n + 2;
+            SetLength(a, n);
         end;
         i := i + 1;
     end;
@@ -178,6 +204,7 @@ end;
 
 procedure writeLongString(startY : Integer; s : longString; target : string; var n : Integer);
 (*write the longString and highlight the target words*)
+//TODO need to be rewritten
 var i, x: Integer;
     temp : string;
 begin
