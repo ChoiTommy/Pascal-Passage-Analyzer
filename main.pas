@@ -15,6 +15,16 @@ uses crt, ui, stringListType, sysutils, longStringType, passageAnalyser, FastCon
 const window_width = 120; //console window width
       window_height = 30; //console window height
 
+      window1_startX = 1;
+      window1_startY = 2;
+      window1_endX = 74;
+      window1_endY = 29;
+
+      window2_startX = 75;
+      window2_startY = 1;
+      window2_endX = 120;
+      window2_endY = 30;
+
 var state, front, i : Integer;
     passage : longString; //array of characters storing the passage
     noOfSent, noOfWords : Integer;
@@ -50,15 +60,15 @@ end;
 
 procedure writePassage;
 begin
-    Window(1, 1, 74, 29);
+    Window(window1_startX, window1_startY, window1_endX, window1_endY);
     ClrScr;
-    GotoXY(1, 2);
-    if Length(a) > window_height-2 then
+    GotoXY(1, 1);
+    if Length(a) > window1_endY-window1_startY+1 then
     begin
-        for i := 0 to window_height-2-1 do
+        for i := 0 to window1_endY-window1_startY do
             WriteLn(a[i]);
-            front := 0;
-        end
+        front := 0;
+    end
     else
         for i := 0 to Length(a)-1 do
             WriteLn(a[i]);
@@ -230,7 +240,7 @@ var position : Integer;
     c : Char;
 begin
     //2nd window
-    Window(75, 1, 120, 30);
+    Window(window2_startX, window2_startY, window2_endX, window2_endY);
     ClrScr;
     cursoroff;
     drawFromTxtFile(banner_startX, banner_startY, banner_path, True, False);
@@ -247,7 +257,7 @@ begin
 			c := ReadKey;
 			if (c = #72) or (c = #80) then
 			begin
-                Window(75, 1, 120, 30);
+                Window(window2_startX, window2_startY, window2_endX, window2_endY);
 				case position of
 					1 : drawButton(button_stats_startX, button_stats_startY, button_stats_width, button_stats_height, button_stats_text, 0);
                     2 : drawButton(button_find_startX, button_find_startY, button_find_width, button_find_height, button_find_text, 0);
@@ -265,26 +275,26 @@ begin
                     4 : drawButton(button_quit_startX, button_quit_startY, button_quit_width, button_quit_height, button_quit_text, 1);
 				end;
 			end
-            else if (c = #81) and (Length(a) > window_height-2) and (front + 27 < Length(a)-1) then
+            else if (c = #81) and (Length(a) > window1_endY-window1_startY+1) and (front + window1_endY-window1_startY < Length(a)-1) then
             begin
-                Window(1, 1, 74, 29);
-                GotoXY(1, 2);
+                Window(window1_startX, window1_startY, window1_endX, window1_endY);
+                GotoXY(1, 1);
                 DelLine;
                 front := front + 1;
-                GotoXY(1, 29);
-                WriteLn(a[front + 27]);
+                GotoXY(1, window1_endY-1);
+                Write(a[front + 27]);
             end
-            else if (c = #73) and (Length(a) > window_height-2) and (front > 0) then
+            else if (c = #73) and (Length(a) > window1_endY-window1_startY+1) and (front > 0) then
             begin
-                Window(1, 1, 74, 29);
-                GotoXY(1, 2);
+                Window(window1_startX, window1_startY, window1_endX, window1_endY);
+                GotoXY(1, 1);
                 InsLine;
                 front := front - 1;
-                WriteLn(a[front]);
+                Write(a[front]);
             end;
 		end;
 	until c = #13;
-    Window(75, 1, 120, 30);
+    Window(window2_startX, window2_startY, window2_endX, window2_endY);
     case position of
 		1 : drawButton(button_stats_startX, button_stats_startY, button_stats_width, button_stats_height, button_stats_text, 2);
         2 : drawButton(button_find_startX, button_find_startY, button_find_width, button_find_height, button_find_text, 2);
@@ -321,13 +331,12 @@ const title_path = 'Text files/stats_title.txt';
 var position: Integer;
     c : Char;
 begin
-    Window(75, 1, 120, 30);
+    Window(window2_startX, window2_startY, window2_endX, window2_endY);
     ClrScr;
     cursoroff;
     //drawFromTxtFile(1, 1, title_path); //TODO find a new ascii art
 
     position := 1;
-    Window(75, 1, 120, 30);
     drawTab(tab_startX, tab_startY, tab_width, tab_height, 'No. of char');
     drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, noOfCharString, -1);
 
@@ -374,19 +383,19 @@ begin
                         end;
 				end;
 			end
-            else if (c = #81) and (Length(a) > window_height-2) and (front + 27 < Length(a)-1) then
+            else if (c = #81) and (Length(a) > window1_endY-window1_startY+1) and (front + window1_endY-window1_startY < Length(a)-1) then
             begin
-                Window(1, 1, 74, 29);
-                GotoXY(1, 2);
+                Window(window1_startX, window1_startY, window1_endX, window1_endY);
+                GotoXY(1, 1);
                 DelLine;
                 front := front + 1;
-                GotoXY(1, 29);
+                GotoXY(1, window1_endY-1);
                 WriteLn(a[front + 27]);
             end
-            else if (c = #73) and (Length(a) > window_height-2) and (front > 0) then
+            else if (c = #73) and (Length(a) > window1_endY-window1_startY) and (front > 0) then
             begin
-                Window(1, 1, 74, 29);
-                GotoXY(1, 2);
+                Window(window1_startX, window1_startY, window1_endX, window1_endY);
+                GotoXY(1, 1);
                 InsLine;
                 front := front - 1;
                 WriteLn(a[front]);
@@ -402,12 +411,12 @@ procedure findScreen(var state : Integer); //not yet finished, still in old vers
  * TODO: rewrite it to search not just only a word, maybe a phrase
  *)
 const title_path = 'Text files/find_title.txt';
-      inputbox_startX = 85 + 5;
-      inputbox_startY = 7;
-      inputbox_width = 16;
-      inputbox_description = 'Target: ';
+      inputbox_startX = 3; //window 2
+      inputbox_startY = 3;
+      inputbox_boxWidth = 20;
+      inputbox_description = 'Target';
       valid_search_target = ['a'..'z', 'A'..'Z'];
-      msgbox_width = Length(inputbox_description) + inputbox_width;
+      msgbox_width = Length(inputbox_description) + inputbox_boxWidth + 4;
       msgbox_height = 15;
       msgbox_startX = inputbox_startX;
       msgbox_startY = inputbox_startY + 3 + 1;
@@ -416,7 +425,63 @@ var target, occurrenceString : string;
     cursorX, cursorY, occurrence : Integer;
     c : Char;
 begin
-    Window(1, 1, 120, 30);
+    Window(window2_startX, window2_startY, window2_endX, window2_endY);
+    ClrScr;
+    cursoroff;
+
+    drawInputBox(inputbox_startX, inputbox_startY, inputbox_boxWidth, inputbox_description, '', False);
+    drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, 'Type a word to search.', -1);
+    cursoron;
+    target := '';
+    cursorX := inputbox_startX + Length(inputbox_description) + 3;
+    cursorY := inputbox_startY + 1;
+    GotoXY(cursorX, cursorY);
+
+    repeat
+	  	c := ReadKey;
+		if c = #0 then
+		begin
+			c := ReadKey;
+			if (c = #81) and (Length(a) > window1_endY-window1_startY+1) and (front + window1_endY-window1_startY < Length(a)-1) then
+            begin
+                Window(window1_startX, window1_startY, window1_endX, window1_endY);
+                GotoXY(1, 1);
+                DelLine;
+                front := front + 1;
+                GotoXY(1, window1_endY-1);
+                WriteLn(a[front + 27]);
+            end
+            else if (c = #73) and (Length(a) > window1_endY-window1_startY) and (front > 0) then
+            begin
+                Window(window1_startX, window1_startY, window1_endX, window1_endY);
+                GotoXY(1, 1);
+                InsLine;
+                front := front - 1;
+                WriteLn(a[front]);
+            end;
+            GotoXY(cursorX, cursorY);
+		end
+        else if (c in valid_search_target) and (Length(target) < inputbox_boxWidth) then //TODO handle cases when length of typed text is greater than box width
+        begin
+            target := target + c;
+            GotoXY(cursorX, cursorY);
+            Write(c);
+            cursorX := cursorX + 1;
+        end
+        else if (c = #8) and (Length(target) > 0) then //backspace
+        begin
+            Delete(target, Length(target), 1);
+            cursorX := cursorX - 1;
+            GotoXY(cursorX, cursorY);
+            Write(' ');
+            GotoXY(cursorX, cursorY);
+        end;
+	until c = #27;
+    Write(target);
+    ReadLn;
+    state := 1;
+
+    {Window(1, 1, window_width, window_height);
     ClrScr;
     drawFromTxtFile(1, 1, title_path, True, False);
     setScreenWidth(85);
@@ -458,7 +523,7 @@ begin
         end;
     until c = #27;
     ClrScr;
-    writePassage;
+    writePassage;}
     state := 1;
 end;
 
