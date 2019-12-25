@@ -4,12 +4,14 @@ interface
 uses crt;
 type longString = array of Char;
      passageArray = array of string;
+     integerArray = array of Integer;
 
 procedure readLongString(var s : longString);
 procedure readLongString(var t : Text; var s : longString);
 function countInLongString(c : Char; s : longString) : Integer;
 function countInLongString(t : string; s : longString) : Integer;
 function posOfChar(c : char; s : longString) : Integer;
+function posOfString(sub: string; long : longString): integerArray;
 function copy(s : longString; start, count : Integer): string;
 function copy(s : longString; start : Integer): string;
 function castStringToLongString(s : string): longString;
@@ -242,6 +244,30 @@ begin
             WriteLn;
         end;
         i := i + 1;
+    end;
+end;
+
+function posOfString(sub: string; long: longString): integerArray;
+(*return position of substring in longstring (0-based)*)
+var i, j, n, temp : Integer;
+begin
+    posOfString := Nil;
+    n := 0;
+    for i := 0 to Length(long)-1-Length(sub) do
+    begin
+        j := 1;
+        temp := i;
+        while (sub[j] = long[temp]) and (j < Length(sub)) do
+        begin
+            j := j + 1;
+            temp := temp + 1;
+        end;
+        if j = Length(sub) then
+        begin
+            n := n + 1;
+            SetLength(posOfString, n);
+            posOfString[n-1] := i;
+        end;
     end;
 end;
 

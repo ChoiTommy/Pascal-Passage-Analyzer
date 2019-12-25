@@ -415,7 +415,7 @@ const title_path = 'Text files/find_title.txt';
       inputbox_startY = 3;
       inputbox_boxWidth = 20;
       inputbox_description = 'Target';
-      valid_search_target = ['a'..'z', 'A'..'Z'];
+      valid_search_target = ['a'..'z', 'A'..'Z', '0'..'9', ',', '''', '.', ' '];
       msgbox_width = Length(inputbox_description) + inputbox_boxWidth + 4;
       msgbox_height = 15;
       msgbox_startX = inputbox_startX;
@@ -424,62 +424,82 @@ const title_path = 'Text files/find_title.txt';
 var target, occurrenceString : string;
     cursorX, cursorY, occurrence : Integer;
     c : Char;
-begin
-    Window(window2_startX, window2_startY, window2_endX, window2_endY);
-    ClrScr;
-    cursoroff;
+    positionInLongString : IntegerArray;
 
-    drawInputBox(inputbox_startX, inputbox_startY, inputbox_boxWidth, inputbox_description, '', False);
-    drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, 'Type a word to search.', -1);
-    cursoron;
-    target := '';
-    cursorX := inputbox_startX + Length(inputbox_description) + 3;
-    cursorY := inputbox_startY + 1;
-    GotoXY(cursorX, cursorY);
+begin
 
     repeat
-	  	c := ReadKey;
-		if c = #0 then
-		begin
-			c := ReadKey;
-			if (c = #81) and (Length(a) > window1_endY-window1_startY+1) and (front + window1_endY-window1_startY < Length(a)-1) then
+        Window(window2_startX, window2_startY, window2_endX, window2_endY);
+        ClrScr;
+        cursoroff;
+
+        drawInputBox(inputbox_startX, inputbox_startY, inputbox_boxWidth, inputbox_description, '', False);
+        drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, 'Type a word to search.', -1);
+
+        cursoron;
+        target := '';
+        SetLength(positionInLongString, 0);
+        cursorX := inputbox_startX + Length(inputbox_description) + 3;
+        cursorY := inputbox_startY + 1;
+        GotoXY(cursorX, cursorY);
+        repeat
+            c := ReadKey;
+            if c = #0 then
             begin
-                Window(window1_startX, window1_startY, window1_endX, window1_endY);
-                GotoXY(1, 1);
-                DelLine;
-                front := front + 1;
-                GotoXY(1, window1_endY-1);
-                WriteLn(a[front + 27]);
+                c := ReadKey;
+                cursoroff;
+                if (c = #81) and (Length(a) > window1_endY-window1_startY+1) and (front + window1_endY-window1_startY < Length(a)-1) then
+                begin
+                    Window(window1_startX, window1_startY, window1_endX, window1_endY);
+                    GotoXY(1, 1);
+                    DelLine;
+                    front := front + 1;
+                    GotoXY(1, window1_endY-1);
+                    WriteLn(a[front + 27]);
+                end
+                else if (c = #73) and (Length(a) > window1_endY-window1_startY) and (front > 0) then
+                begin
+                    Window(window1_startX, window1_startY, window1_endX, window1_endY);
+                    GotoXY(1, 1);
+                    InsLine;
+                    front := front - 1;
+                    WriteLn(a[front]);
+                end;
+                cursoron;
+                Window(window2_startX, window2_startY, window2_endX, window2_endY);
+                GotoXY(cursorX, cursorY);
             end
-            else if (c = #73) and (Length(a) > window1_endY-window1_startY) and (front > 0) then
+            else if (c in valid_search_target) and (Length(target) < inputbox_boxWidth) then //TODO handle cases when length of typed text is greater than box width
             begin
-                Window(window1_startX, window1_startY, window1_endX, window1_endY);
-                GotoXY(1, 1);
-                InsLine;
-                front := front - 1;
-                WriteLn(a[front]);
+                target := target + c;
+                GotoXY(cursorX, cursorY);
+                Write(c);
+                cursorX := cursorX + 1;
+            end
+            else if (c = #8) and (Length(target) > 0) then //backspace
+            begin
+                Delete(target, Length(target), 1);
+                cursorX := cursorX - 1;
+                GotoXY(cursorX, cursorY);
+                Write(' ');
+                GotoXY(cursorX, cursorY);
             end;
-            GotoXY(cursorX, cursorY);
-		end
-        else if (c in valid_search_target) and (Length(target) < inputbox_boxWidth) then //TODO handle cases when length of typed text is greater than box width
+        until (c = #13) and (target <> '') or (c = #27);
+        cursoroff;
+        if (c = #13) and (target <> '') then //find algorithm
         begin
-            target := target + c;
-            GotoXY(cursorX, cursorY);
-            Write(c);
-            cursorX := cursorX + 1;
-        end
-        else if (c = #8) and (Length(target) > 0) then //backspace
-        begin
-            Delete(target, Length(target), 1);
-            cursorX := cursorX - 1;
-            GotoXY(cursorX, cursorY);
-            Write(' ');
-            GotoXY(cursorX, cursorY);
+            positionInLongString := posOfString(target, passage);
+            ClrScr;
+            for i := 0 to Length(positionInLongString)-1 do
+            begin
+                GotoXY(1, i + 1);
+                Write(positionInLongString[i]);
+            end;
+            ReadLn;
         end;
-	until c = #27;
-    Write(target);
-    ReadLn;
-    state := 1;
+
+
+    until c = #27;
 
     {Window(1, 1, window_width, window_height);
     ClrScr;
