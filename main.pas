@@ -405,6 +405,72 @@ begin
     state := 1;
 end;
 
+procedure writePassageWithTargetHighlighted(positionInLongString : IntegerArray; s : string);
+type x = record
+                positionInPassageArray: Integer;
+                start : Integer;
+         end;
+var i, j, m, temp, n : Integer;
+    p : array of x;
+begin
+    Window(window1_startX, window1_startY, window1_endX, window1_endY);
+    ClrScr;
+    GotoXY(1, 1);
+
+    SetLength(p, Length(positionInLongString));
+
+    for i := 0 to Length(p)-1 do
+    begin
+        m := 0; //passageArray pointer 0-based
+        temp := positionInLongString[i];
+        while (temp >= 0) and (m < Length(a)) do
+        begin
+            temp := temp - Length(a[m]);
+            m := m + 1;
+        end;
+        if m <> 0 then
+        begin
+            temp := temp + Length(a[m-1]);
+            p[i].positionInPassageArray := m-1;
+        end;
+        p[i].start := temp;
+    end;
+
+    m := 0;
+    n := 0;
+    for i := 0 to Length(a)-1 do
+    begin
+        for j := 1 to Length(a[i]) do
+        begin
+            if (Length(p) <> 0) and (j = p[m].start+1) and (i = p[m].positionInPassageArray) then
+            begin
+                n := Length(s);
+                m := m + 1;
+                TextBackground(Yellow);
+                TextColor(Black);
+            end
+            else if n = 0 then
+            begin
+                TextBackground(Black);
+                TextColor(LightGray);
+            end;
+            Write(a[i][j]);
+            if n > 0 then n := n - 1;
+        end;
+        WriteLn;
+    end;
+end;
+
+procedure writePassageWithoutScolling;
+var i: Integer;
+begin
+    Window(window1_startX, window1_startY, window1_endX, window1_endY);
+    ClrScr;
+    GotoXY(1, 1);
+    for i := 0 to Length(a)-1 do
+        WriteLn(a[i])
+end;
+
 procedure findScreen(var state : Integer); //not yet finished, still in old version
 (*
  * Find and highlight a specific word
@@ -413,7 +479,7 @@ procedure findScreen(var state : Integer); //not yet finished, still in old vers
 const title_path = 'Text files/find_title.txt';
       inputbox_startX = 3; //window 2
       inputbox_startY = 3;
-      inputbox_boxWidth = 20;
+      inputbox_boxWidth = 30;
       inputbox_description = 'Target';
       valid_search_target = ['a'..'z', 'A'..'Z', '0'..'9', ',', '''', '.', ' '];
       msgbox_width = Length(inputbox_description) + inputbox_boxWidth + 4;
@@ -421,14 +487,16 @@ const title_path = 'Text files/find_title.txt';
       msgbox_startX = inputbox_startX;
       msgbox_startY = inputbox_startY + 3 + 1;
 
-var target, occurrenceString : string;
-    cursorX, cursorY, occurrence : Integer;
+var target, s : string;
+    cursorX, cursorY : Integer;
     c : Char;
     positionInLongString : IntegerArray;
 
 begin
-
     repeat
+        Window(window1_startX, window1_startY, window1_endX, window1_endY);
+        ClrScr;
+        writePassageWithoutScolling;
         Window(window2_startX, window2_startY, window2_endX, window2_endY);
         ClrScr;
         cursoroff;
@@ -445,30 +513,7 @@ begin
         repeat
             c := ReadKey;
             if c = #0 then
-            begin
-                c := ReadKey;
-                cursoroff;
-                if (c = #81) and (Length(a) > window1_endY-window1_startY+1) and (front + window1_endY-window1_startY < Length(a)-1) then
-                begin
-                    Window(window1_startX, window1_startY, window1_endX, window1_endY);
-                    GotoXY(1, 1);
-                    DelLine;
-                    front := front + 1;
-                    GotoXY(1, window1_endY-1);
-                    WriteLn(a[front + 27]);
-                end
-                else if (c = #73) and (Length(a) > window1_endY-window1_startY) and (front > 0) then
-                begin
-                    Window(window1_startX, window1_startY, window1_endX, window1_endY);
-                    GotoXY(1, 1);
-                    InsLine;
-                    front := front - 1;
-                    WriteLn(a[front]);
-                end;
-                cursoron;
-                Window(window2_startX, window2_startY, window2_endX, window2_endY);
-                GotoXY(cursorX, cursorY);
-            end
+                c := ReadKey
             else if (c in valid_search_target) and (Length(target) < inputbox_boxWidth) then //TODO handle cases when length of typed text is greater than box width
             begin
                 target := target + c;
@@ -489,61 +534,16 @@ begin
         if (c = #13) and (target <> '') then //find algorithm
         begin
             positionInLongString := posOfString(target, passage);
-            ClrScr;
-            for i := 0 to Length(positionInLongString)-1 do
-            begin
-                GotoXY(1, i + 1);
-                Write(positionInLongString[i]);
-            end;
+            Str(Length(positionInLongString), s);
+            drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, s + ' occurrance(s)', -1);
+            if Length(positionInLongString) <> 0 then
+                writePassageWithTargetHighlighted(positionInLongString, target);
             ReadLn;
         end;
-
-
-    until c = #27;
-
-    {Window(1, 1, window_width, window_height);
+    Window(1, 1, 120, 5 + Length(a));
     ClrScr;
-    drawFromTxtFile(1, 1, title_path, True, False);
-    setScreenWidth(85);
-    repeat
-        writeLongString(7, passage, '', occurrence);
-        drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, 'Type a word to search.', -1);
-        drawInputBox(inputbox_startX, inputbox_startY, inputbox_width, inputbox_description, '', False);
-        cursoron;
-        target := '';
-        cursorX := inputbox_startX + Length(inputbox_description);
-        cursorY := inputbox_startY;
-        repeat
-            c := ReadKey;
-            if c = #0 then c := ReadKey
-            else if (c in valid_search_target) and (Length(target) < inputbox_width) then
-            begin
-                target := target + c;
-                GotoXY(cursorX, cursorY);
-                Write(c);
-                cursorX := cursorX + 1;
-            end
-            else if (c = #8) and (Length(target) > 0) then
-            begin
-                Delete(target, Length(target), 1);
-                cursorX := cursorX - 1;
-                GotoXY(cursorX, cursorY);
-                Write(' ');
-                GotoXY(cursorX, cursorY);
-            end;
-        until (c = #13) and (target <> '') or (c = #27);
-        cursoroff;
-        if c = #13 then
-        begin
-            writeLongString(7, passage, target, occurrence);
-            Str(occurrence, occurrenceString);
-            drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, occurrenceString + ' occurrence(s)', -1);
-            c := ReadKey;
-            if c = #0 then c := ReadKey;
-        end;
     until c = #27;
-    ClrScr;
-    writePassage;}
+    writePassage;
     state := 1;
 end;
 

@@ -17,6 +17,7 @@ function copy(s : longString; start : Integer): string;
 function castStringToLongString(s : string): longString;
 function castLongStringToString(s : longString): string;
 procedure setScreenWidth(a : Integer);
+function getScreenWidth: Integer;
 procedure splitLongStringToArray(s : longString; var a : passageArray);
 procedure writeLongString(startY : Integer; s : longString; target : string; var n : Integer);
 
@@ -182,23 +183,18 @@ begin
             x := Length(a[n-1]) - 1;
             if x + Length(temp) > screen_width then
             begin
-                //WriteLn;
-                //Write(temp);
                 n := n + 1;
                 SetLength(a, n);
                 a[n-1] := '';
             end;
-            //else Write(temp);
-            //Write(s[i]);
             a[n-1] := a[n-1] + temp + s[i];
             temp := '';
         end
         else if (s[i] = #13) and (s[i+1] = #10) then
         begin
-            //WriteLn;
-            //WriteLn;
             n := n + 2;
             SetLength(a, n);
+            a[n-2] := '  ';
         end;
         i := i + 1;
     end;
@@ -257,18 +253,23 @@ begin
     begin
         j := 1;
         temp := i;
-        while (sub[j] = long[temp]) and (j < Length(sub)) do
+        while (sub[j] = long[temp]) and (j <= Length(sub)) do
         begin
             j := j + 1;
             temp := temp + 1;
         end;
-        if j = Length(sub) then
+        if j-1 = Length(sub) then
         begin
             n := n + 1;
             SetLength(posOfString, n);
             posOfString[n-1] := i;
         end;
     end;
+end;
+
+function getScreenWidth: Integer;
+begin
+    getScreenWidth := screen_width;
 end;
 
 end.
