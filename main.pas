@@ -99,7 +99,7 @@ const banner_startX = (window_width - 62) div 2;
       button_ok_startX = 74;
       button_ok_startY = button_quit_startY;
 
-      valid_file_name_char = ['0'..'9', 'a'..'z', 'A'..'Z', '.', ' ', '/']; //characters that are allowed to type
+      valid_file_name_char = ['0'..'9', 'a'..'z', 'A'..'Z', '.', ' ', '/', '_', '-', '''']; //characters that are allowed to type
 
 var c : Char;
     cursorX, cursorY, buttonPos : Integer;
