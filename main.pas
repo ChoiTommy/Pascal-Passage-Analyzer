@@ -36,7 +36,7 @@ procedure checkScreenWidthScreen(var state : Integer);
 (*write and check WhereX at the same time to check if the screen width is 120*)
 const banner_startX = (window_width - 62) div 2;
       banner_startY = 3;
-      banner_path = 'Text files/banner.txt';
+      banner_path = 'ASCII art text files/banner.txt';
 
       msgbox_width = 116;
       msgbox_height = 24;
@@ -78,7 +78,7 @@ procedure importTextFileScreen(var state : Integer);
 (*Let user to input the file name of the passage*)
 const banner_startX = (window_width - 62) div 2;
       banner_startY = 3;
-      banner_path = 'Text files/banner.txt';
+      banner_path = 'ASCII art text files/banner.txt';
 
       msgbox_width = 62;
       msgbox_height = 15;
@@ -210,7 +210,7 @@ procedure mainScreen(var state : Integer);
 (*two windows*)
 const banner_startX = 2; //2nd window
       banner_startY = 1;
-      banner_path = 'Text files/mainScreenBanner.txt';
+      banner_path = 'ASCII art text files/mainScreenBanner.txt';
 
       button_stats_width = 23;
       button_stats_height = 5;
@@ -316,7 +316,7 @@ end;
 procedure statsScreen(var state : Integer);
 (*show some basic statistics of the passage*)
 (*A banner is missing currently*)
-const title_path = 'Text files/stats_title.txt';
+const title_path = 'ASCII art text files/stats_title.txt';
       margin = 1;
       tab_width = 21;
       tab_height = 3;
@@ -476,12 +476,12 @@ procedure findScreen(var state : Integer); //not yet finished, still in old vers
  * Find and highlight a specific word
  * TODO: rewrite it to search not just only a word, maybe a phrase
  *)
-const title_path = 'Text files/find_title.txt';
+const title_path = 'ASCII art text files/find_title.txt';
       inputbox_startX = 3; //window 2
       inputbox_startY = 3;
       inputbox_boxWidth = 30;
       inputbox_description = 'Target';
-      valid_search_target = ['a'..'z', 'A'..'Z', '0'..'9', ',', '''', '.', ' '];
+      valid_search_target = ['a'..'z', 'A'..'Z', '0'..'9', ',', '''', '.', ' ', '!'];
       msgbox_width = Length(inputbox_description) + inputbox_boxWidth + 4;
       msgbox_height = 15;
       msgbox_startX = inputbox_startX;
