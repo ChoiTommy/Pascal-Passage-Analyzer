@@ -31,6 +31,7 @@ var state, front, i : Integer;
     noOfCharString, noOfParaString, noOfSentString, noOfWordsString, readingTimeString, readingEaseScoreString, noOfUniqueWordsString : string;
     uniqueWords : stringList; //array list storing unique words
     a : passageArray;
+    textFileName : string;
 
 procedure checkScreenWidthScreen(var state : Integer);
 (*write and check WhereX at the same time to check if the screen width is 120*)
@@ -38,21 +39,24 @@ const banner_startX = (window_width - 62) div 2;
       banner_startY = 3;
       banner_path = 'ASCII art text files/banner.txt';
 
-      msgbox_width = 116;
-      msgbox_height = 24;
-      msgbox_startX = 3;
-      msgbox_startY = 2;
+      msgbox_width = 62;
+      msgbox_height = 15;
+      msgbox_startX = (window_width-msgbox_width) div 2;
+      msgbox_startY = 12;
 var screenWidth : Integer;
 	screenWidthString : string;
+    c : Char;
 begin
     screenWidth := getWindowWidth;
 	if screenWidth <> window_width then
 	begin
         cursoroff;
 		Str(screenWidth, screenWidthString);
+        setColors(custom_textbackground, custom_textcolor);
+        ClrScr;
 		drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, 'Please set your window to 120*30. Current width: ' + screenWidthString, -1);
-        drawFromTxtFile(banner_startX, banner_startY, banner_path, False, True);
-        ReadLn;
+        drawFromTxtFile(banner_startX, banner_startY, banner_path, False, False);
+        c := ReadKey;
 		state := -1; //exit
 	end
     else state := 0; //advance to importTextFileScreen()
@@ -60,8 +64,10 @@ end;
 
 procedure writePassage;
 begin
-    Window(window1_startX, window1_startY, window1_endX, window1_endY);
+    Window(1, 1, 120, 30);
+    resetDefaultColors(True, True);
     ClrScr;
+    Window(window1_startX, window1_startY, window1_endX, window1_endY);
     GotoXY(1, 1);
     if Length(a) > window1_endY-window1_startY+1 then
     begin
@@ -105,14 +111,15 @@ var c : Char;
     cursorX, cursorY, buttonPos : Integer;
     fileExist : Boolean;
     t : Text;
-	textFileName : string;
 begin
+    Window(1, 1, 120, 30);
+    setColors(custom_textbackground, custom_textcolor);
     ClrScr;
 	drawFromTxtFile(banner_startX, banner_startY, banner_path, False, False);
     drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, '', -1);
     drawInputBox(inputbox_startX, inputbox_startY, inputbox_boxWidth, inputbox_text, inputbox_hint, False);
     drawButton(button_quit_startX, button_quit_startY, button_width, button_height, 'Quit', 0);
-    buttonPos := 1; //0: 'Quit' 1:'OK'
+    buttonPos := 1; //0:'Quit' 1:'OK'
     drawButton(button_ok_startX, button_ok_startY, button_width, button_height, 'OK', 1);
 
     cursorX := inputbox_startX + Length(inputbox_text) + 3;
@@ -148,6 +155,7 @@ begin
             if (textFileName <> '') and (Length(textFileName) = 1) then
                 drawInputBox(inputbox_startX, inputbox_startY, inputbox_boxWidth, inputbox_text, inputbox_hint, True);
             GotoXY(cursorX, cursorY);
+            setColors(inputbox_textbackground_box, inputbox_textcolor_input);
             Write(c);
             cursorX := cursorX + 1;
         end
@@ -156,6 +164,7 @@ begin
             Delete(textFileName, Length(textFileName), 1);
             cursorX := cursorX - 1;
             GotoXY(cursorX, cursorY);
+            setColors(inputbox_textbackground_box, inputbox_textcolor_input);
             if textFileName = '' then
                 drawInputBox(inputbox_startX, inputbox_startY, inputbox_boxWidth, inputbox_text, inputbox_hint, False)
             else Write(' ');
@@ -198,6 +207,8 @@ begin
         end
         else
         begin
+            setColors(custom_textbackground, custom_textcolor);
+            ClrScr;
             drawFromTxtFile(banner_startX, banner_startY, banner_path, False, False);
             drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, textFileName + ' not found. Press Enter to exit.', -1); //TODO add two more buttons here
             state := -1; //exit
@@ -215,7 +226,7 @@ const banner_startX = 2; //2nd window
       button_stats_width = 23;
       button_stats_height = 5;
       button_stats_startX = 12; //2nd window
-      button_stats_startY = 8;
+      button_stats_startY = 9;
       button_stats_text = 'Stats';
 
       button_find_width = button_stats_width;
@@ -241,9 +252,10 @@ var position : Integer;
 begin
     //2nd window
     Window(window2_startX, window2_startY, window2_endX, window2_endY);
+    setColors(custom_textbackground, custom_textcolor);
     ClrScr;
     cursoroff;
-    drawFromTxtFile(banner_startX, banner_startY, banner_path, True, False);
+    drawFromTxtFile(banner_startX, banner_startY, banner_path, False, False);
     position := 1;
     drawButton(button_stats_startX, button_stats_startY, button_stats_width, button_stats_height, button_stats_text, 1);
     drawButton(button_find_startX, button_find_startY, button_find_width, button_find_height, button_find_text, 0);
@@ -318,23 +330,24 @@ procedure statsScreen(var state : Integer);
 (*A banner is missing currently*)
 const title_path = 'ASCII art text files/stats_title.txt';
       margin = 1;
-      tab_width = 21;
+      tab_width = 40;
       tab_height = 3;
-      tab_startX = 18;
-      tab_startY = 7;
+      tab_startX = 4;
+      tab_startY = 9;
 
       msgbox_width = tab_width;
-      msgbox_height = 12;
+      msgbox_height = 17;
       msgbox_startX = tab_startX;
-      msgbox_startY = 6 + tab_height + 3;
+      msgbox_startY = tab_startY + tab_height + 1;
 
 var position: Integer;
     c : Char;
 begin
     Window(window2_startX, window2_startY, window2_endX, window2_endY);
+    setColors(custom_textbackground, custom_textcolor);
     ClrScr;
     cursoroff;
-    //drawFromTxtFile(1, 1, title_path); //TODO find a new ascii art
+    drawFromTxtFile(7, 1, title_path, False, False);
 
     position := 1;
     drawTab(tab_startX, tab_startY, tab_width, tab_height, 'No. of char');
@@ -414,6 +427,7 @@ var i, j, m, temp, n : Integer;
     p : array of x;
 begin
     Window(window1_startX, window1_startY, window1_endX, window1_endY);
+    resetDefaultColors(True, True);
     ClrScr;
     GotoXY(1, 1);
 
@@ -446,39 +460,37 @@ begin
             begin
                 n := Length(s);
                 m := m + 1;
-                TextBackground(Yellow);
-                TextColor(Black);
+                setColors(Yellow, Black);
             end
-            else if n = 0 then
-            begin
-                TextBackground(Black);
-                TextColor(LightGray);
-            end;
+            else if (n = 0) then
+                resetDefaultColors(True, True);
             Write(a[i][j]);
             if n > 0 then n := n - 1;
         end;
         WriteLn;
     end;
+    resetDefaultColors(True, True);
 end;
 
 procedure writePassageWithoutScolling;
 var i: Integer;
 begin
     Window(window1_startX, window1_startY, window1_endX, window1_endY);
+    resetDefaultColors(True, True);
     ClrScr;
     GotoXY(1, 1);
     for i := 0 to Length(a)-1 do
         WriteLn(a[i])
 end;
 
-procedure findScreen(var state : Integer); //not yet finished, still in old version
+procedure findScreen(var state : Integer);
 (*
  * Find and highlight a specific word
- * TODO: rewrite it to search not just only a word, maybe a phrase
+ * TODO: allwo scrolling
  *)
 const title_path = 'ASCII art text files/find_title.txt';
-      inputbox_startX = 3; //window 2
-      inputbox_startY = 3;
+      inputbox_startX = 4; //window 2
+      inputbox_startY = 9;
       inputbox_boxWidth = 30;
       inputbox_description = 'Target';
       valid_search_target = ['a'..'z', 'A'..'Z', '0'..'9', ',', '''', '.', ' ', '!'];
@@ -494,13 +506,13 @@ var target, s : string;
 
 begin
     repeat
-        Window(window1_startX, window1_startY, window1_endX, window1_endY);
-        ClrScr;
         writePassageWithoutScolling;
         Window(window2_startX, window2_startY, window2_endX, window2_endY);
+        setColors(custom_textbackground, custom_textcolor);
         ClrScr;
         cursoroff;
 
+        drawFromTxtFile(11, 1, title_path, False, False);
         drawInputBox(inputbox_startX, inputbox_startY, inputbox_boxWidth, inputbox_description, '', False);
         drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, 'Type a word to search.', -1);
 
@@ -518,6 +530,7 @@ begin
             begin
                 target := target + c;
                 GotoXY(cursorX, cursorY);
+                setColors(inputbox_textbackground_box, inputbox_textcolor_input);
                 Write(c);
                 cursorX := cursorX + 1;
             end
@@ -526,6 +539,7 @@ begin
                 Delete(target, Length(target), 1);
                 cursorX := cursorX - 1;
                 GotoXY(cursorX, cursorY);
+                setColors(inputbox_textbackground_box, inputbox_textcolor_input);
                 Write(' ');
                 GotoXY(cursorX, cursorY);
             end;
@@ -540,19 +554,59 @@ begin
                 writePassageWithTargetHighlighted(positionInLongString, target);
             ReadLn;
         end;
-    Window(1, 1, 120, 5 + Length(a));
-    ClrScr;
+        Window(1, 1, 120, 5 + Length(a));
+        resetDefaultColors(True, True);
+        ClrScr;
     until c = #27;
     writePassage;
     state := 1;
 end;
 
 procedure settingsScreen(var state: Integer);
+var c : Char;
 begin
+    Window(window2_startX, window2_startY, window2_endX, window2_endY);
+    setColors(custom_textbackground, custom_textcolor);
     ClrScr;
-    WriteLn('under construction');
-    ReadLn;
+    cursoroff;
+    GotoXY(2, 3);
+    WriteLn('Current text file: ', textFileName);
+    drawButton(12, 5, 21, 3, 'Reset', 0);
     state := 1;
+    repeat
+	  	c := ReadKey;
+		if c = #0 then
+		begin
+			c := ReadKey;
+			if (c = #81) and (Length(a) > window1_endY-window1_startY+1) and (front + window1_endY-window1_startY < Length(a)-1) then
+            begin
+                Window(window1_startX, window1_startY, window1_endX, window1_endY);
+                GotoXY(1, 1);
+                DelLine;
+                front := front + 1;
+                GotoXY(1, window1_endY-1);
+                WriteLn(a[front + 27]);
+            end
+            else if (c = #73) and (Length(a) > window1_endY-window1_startY) and (front > 0) then
+            begin
+                Window(window1_startX, window1_startY, window1_endX, window1_endY);
+                GotoXY(1, 1);
+                InsLine;
+                front := front - 1;
+                WriteLn(a[front]);
+            end;
+		end
+        else if c = #13 then
+        begin
+            drawButton(12, 5, 21, 3, 'Reset', 2);
+            Delay(100);
+            drawButton(12, 5, 21, 3, 'Reset', 1);
+            Delay(100);
+            state := 0;
+        end;
+	until (c = #27) or (c = #13);
+
+
 end;
 
 begin

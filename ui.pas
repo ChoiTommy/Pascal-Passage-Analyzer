@@ -3,21 +3,24 @@ unit ui;
 interface
 uses crt;
 //TODO Create difference themes?
-const default_textbackground = Black;
-      default_textcolor = LightGray;
+const default_textbackground = LightCyan;
+      default_textcolor = Black;
+
+      custom_textbackground = LightMagenta;
+      custom_textcolor = LightGray;
 
       //button colors
-      button_textbackground_normal = LightGray; //TODO set attractive colors
-      button_textbackground_normal_shadow = Red;
+      button_textbackground_normal = 3; //TODO set attractive colors
+      button_textbackground_normal_shadow = Blue;
       button_textcolor_normal = Black;
       button_textbackground_selected = Blue;
-      button_textbackground_selected_shadow = button_textbackground_normal_shadow;
+      button_textbackground_selected_shadow = LightBlue;
       button_textcolor_selected = LightGray;
-      button_textbackground_clicked = Blue;
+      button_textbackground_clicked = button_textbackground_selected;
       button_textcolor_clicked = Black;
 
       //message box colors
-      msgbox_textbackground = LightGray;
+      msgbox_textbackground = LightCyan;
       msgbox_textcolor = Black;
 
       //check box colors
@@ -27,14 +30,14 @@ const default_textbackground = Black;
       checkbox_textcolor_selected = Black;
 
       //input box colors
-      inputbox_textbackground = LightGray;
+      inputbox_textbackground = LightCyan;
       inputbox_textcolor = Black;
       inputbox_textbackground_box = Black;
       inputbox_textcolor_input = LightGray;
       inputbox_textcolor_hint = Yellow;
 
       //tab colors
-      tab_textbackground = LightGray;
+      tab_textbackground = LightCyan;
       tab_textcolor = Black;
 
       //draw ascii arts colors
@@ -48,6 +51,8 @@ function getWindowWidth : Integer;
 procedure drawCheckBox(startX, startY : Integer; description : string; selected, checked : Boolean);
 procedure drawInputBox(startX, startY: Integer; boxWidth: Integer; message, hint: string; typing : Boolean);
 procedure drawTab(startX, startY, width, height : integer; s : string);
+procedure setColors(a, b : Byte);
+procedure resetDefaultColors(text, background: Boolean);
 
 implementation
 
@@ -72,6 +77,7 @@ procedure drawButton(startX, startY, width, height : integer; s : string; state 
  *)
 var i, j, x, y : integer;
 begin
+    HighVideo;
     x := width div 2 - Length(s) div 2;
     y := height div 2;
     GotoXY(startX, startY);
@@ -139,7 +145,7 @@ begin
                 end;
                 GotoXY(startX + x + 1, startY + y + 1);
                 Write(s);
-                setColors(default_textbackground, default_textcolor);
+                setColors(custom_textbackground, custom_textcolor);
                 for i := startY to startY + height -1 do
                 begin
                     GotoXY(startX, i);
@@ -197,13 +203,13 @@ begin
             begin
                 if not invertedColors then setColors(art_textbackground, art_textcolor);
                 Write(' ');
-                if not invertedColors then resetDefaultColors(True, True);
+                if not invertedColors then setColors(custom_textbackground, custom_textcolor);
             end
             else
             begin
                 if invertedColors then setColors(art_textbackground, art_textcolor);
                 Write(c);
-                if invertedColors then resetDefaultColors(True, True);
+                if invertedColors then setColors(custom_textbackground, custom_textcolor);
             end;
         end;
         ReadLn(t);

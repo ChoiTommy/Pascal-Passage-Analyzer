@@ -181,7 +181,7 @@ begin
         else if not(s[i] in [#13, #10]) then
         begin
             x := Length(a[n-1]) - 1;
-            if x + Length(temp) > screen_width then
+            if x + Length(temp) >= screen_width then
             begin
                 n := n + 1;
                 SetLength(a, n);
@@ -249,7 +249,7 @@ var i, j, n, temp : Integer;
 begin
     posOfString := Nil;
     n := 0;
-    for i := 0 to Length(long)-1-Length(sub) do
+    for i := 0 to Length(long)-Length(sub) do
     begin
         j := 1;
         temp := i;

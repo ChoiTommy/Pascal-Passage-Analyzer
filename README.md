@@ -27,5 +27,17 @@ This project is created for 2020 HKDSE Information and Communication Technology 
 
 **UI screenshots**:
 
+I just used the colors available to design the UI, including blue, green, gray, cyan, yellow, red, magenta and black. No fancy colors.
+
+![importTextFileScreen](Screenshots/importTextFileScreen.jpg)
+
+![mainScreen](Screenshots/mainScreen.jpg)
+
+![statsScreen](Screenshots/statsScreen.jpg)
+
+![findScreen](Screenshots/findScreen.jpg)
+
+![settingsScreen](Screenshots/settingsScreen.jpg)
+
 ## Compile
   Compile the file ```main.pas``` and run the ```.exe``` file using any pascal compiler

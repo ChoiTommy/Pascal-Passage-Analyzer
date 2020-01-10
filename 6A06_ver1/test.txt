@@ -1,5 +1,0 @@
-This is my first version of passage analyser.
-It can count the number of characters, number of words, number of paragraphs, number of sentenences, reading time, reading ease score and number of unique words.
-A unique_words.csv will be generated in the same folder each time you run the program.
-There is also a Find function to count the occurrence of a specific word.
-Put your text file of your passage in the same folder as the program.
