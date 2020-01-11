@@ -321,8 +321,8 @@ begin
         4 : drawButton(button_quit_startX, button_quit_startY, button_quit_width, button_quit_height, button_quit_text, 1);
 	end;
     Delay(200);
-    cursoron;
     state := position + 1;
+    if position = 4 then state := -1;
 end;
 
 procedure statsScreen(var state : Integer);
@@ -350,7 +350,7 @@ begin
     drawFromTxtFile(7, 1, title_path, False, False);
 
     position := 1;
-    drawTab(tab_startX, tab_startY, tab_width, tab_height, 'No. of char');
+    drawTab(tab_startX, tab_startY, tab_width, tab_height, 'No. of character(s)');
     drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, noOfCharString, -1);
 
     repeat
@@ -367,19 +367,19 @@ begin
 				end;
 				case position of
 					1 : begin
-                            drawTab(tab_startX, tab_startY, tab_width, tab_height, 'No. of char');
+                            drawTab(tab_startX, tab_startY, tab_width, tab_height, 'No. of character(s)');
                             drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, noOfCharString, -1);
                         end;
                     2 : begin
-                            drawTab(tab_startX, tab_startY, tab_width, tab_height, 'No. of para');
+                            drawTab(tab_startX, tab_startY, tab_width, tab_height, 'No. of paragraphs(s)');
                             drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, noOfParaString, -1);
                         end;
                     3 : begin
-                            drawTab(tab_startX, tab_startY, tab_width, tab_height, 'No. of sent');
+                            drawTab(tab_startX, tab_startY, tab_width, tab_height, 'No. of sentence(s)');
                             drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, noOfSentString, -1);
                         end;
                     4 : begin
-                            drawTab(tab_startX, tab_startY, tab_width, tab_height, 'No. of words');
+                            drawTab(tab_startX, tab_startY, tab_width, tab_height, 'No. of word(s)');
                             drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, noOfWordsString, -1);
                         end;
                     5 : begin
@@ -391,7 +391,7 @@ begin
                             drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, readingEaseScoreString, -1);
                         end;
                     7 : begin
-                            drawTab(tab_startX, tab_startY, tab_width, tab_height, 'No. of unique words');
+                            drawTab(tab_startX, tab_startY, tab_width, tab_height, 'No. of unique word(s)');
                             drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, noOfUniqueWordsString, -1);
                         end;
 				end;
@@ -605,8 +605,6 @@ begin
             state := 0;
         end;
 	until (c = #27) or (c = #13);
-
-
 end;
 
 begin
@@ -619,5 +617,5 @@ begin
             3 : findScreen(state);
             4 : settingsScreen(state);
 		end;
-	until (state = 5) or (state = -1);
+	until state = -1;
 end.

@@ -44,10 +44,13 @@ end;
 
 function countNoOfWords(s : longString): Integer;
 begin
-	countNoOfWords := countInLongString(' ', s) + countInLongString(#13 + #10, s) + 1 - countInLongString('-', s);
+	countNoOfWords := countInLongString(' ', s) + countInLongString(#13 + #10, s) + 1;
 end;
 
 function generateReadingTime(noOfWords : Integer):string;
+(*
+ * Sauce: https://ezinearticles.com/?What-is-the-Average-Reading-Speed-and-the-Best-Rate-of-Reading?&id=2298503
+ *)
 begin
 	generateReadingTime := toMinute(noOfWords / 200);
 end;
@@ -69,7 +72,6 @@ begin
 	clear(getListOfUniqueWords);
 	temp := '';
 	for i := 0 to Length(s)-1 do
-	begin
 		if (s[i] in words_set) then
             temp := temp + lowerCase(s[i])
 		else if (i <> Length(s)-1) and ((s[i] in ['.','''']) and (s[i-1] in words_set) and (s[i+1] in words_set)) then
@@ -80,7 +82,6 @@ begin
 				add(getListOfUniqueWords, temp);
 			temp := '';
 		end;
-	end;
 end;
 
 procedure generateUniqueWordsTxtFile(list : stringList);

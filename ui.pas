@@ -187,7 +187,6 @@ procedure drawFromTxtFile(startX, startY : Integer; path : string; withoutModifi
 var t : Text;
     i : Integer;
     c : Char;
-    a, b : Byte;
 begin
     assign(t, path);
 	reset(t);
