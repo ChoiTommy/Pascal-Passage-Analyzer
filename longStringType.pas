@@ -19,7 +19,6 @@ function castLongStringToString(s : longString): string;
 procedure setScreenWidth(a : Integer);
 function getScreenWidth: Integer;
 procedure splitLongStringToArray(s : longString; var a : passageArray);
-procedure writeLongString(startY : Integer; s : longString; target : string; var n : Integer);
 
 implementation
 const words_set = ['A'..'Z', 'a'..'z', '0'..'9'];
@@ -77,7 +76,7 @@ begin
 end;
 
 function countInLongString(c : Char; s : longString) : Integer;
-(*Count the no. of occurrance of a character in a long string*)
+(*Count the no. of occurrence of a character in a long string*)
 var i : Integer;
 begin
     countInLongString := 0;
@@ -195,49 +194,6 @@ begin
             n := n + 2;
             SetLength(a, n);
             a[n-2] := '  ';
-        end;
-        i := i + 1;
-    end;
-end;
-
-procedure writeLongString(startY : Integer; s : longString; target : string; var n : Integer);
-(*write the longString and highlight the target words*)
-//TODO need to be rewritten
-var i, x: Integer;
-    temp : string;
-begin
-    i := 0;
-    n := 0;
-    GotoXY(1, startY);
-    temp := '';
-    while i < Length(s) do
-    begin
-        if (s[i] in words_set) then
-            temp := temp + s[i]
-        else if not(s[i] in [#13, #10]) then
-        begin
-            x := WhereX - 1;
-            if (lowerCase(target) = lowerCase(temp)) and (temp <> '') then
-            begin
-                n := n + 1;
-                TextColor(highlighted_textcolor);
-                TextBackground(highlighted_textbackground);
-            end;
-            if x + Length(temp) > screen_width then
-            begin
-                WriteLn;
-                Write(temp);
-            end
-            else Write(temp);
-            TextColor(default_textcolor);
-            TextBackground(default_textbackground);
-            Write(s[i]);
-            temp := '';
-        end
-        else if (s[i] = #13) and (s[i+1] = #10) then
-        begin
-            WriteLn;
-            WriteLn;
         end;
         i := i + 1;
     end;
