@@ -40,4 +40,4 @@ I just used the colors available to design the UI, including blue, green, gray, 
 ![settingsScreen](Screenshots/settingsScreen.jpg)
 
 ## Compile
-  Compile the file ```main.pas``` and run the ```.exe``` file using any pascal compiler
+  Compile the file ```main.pas``` using any pascal compiler, and run the ```main.exe```
