@@ -2,7 +2,6 @@ unit ui;
 
 interface
 uses crt;
-//TODO Create difference themes?
 const default_textbackground = LightCyan;
       default_textcolor = Black;
 
@@ -10,7 +9,7 @@ const default_textbackground = LightCyan;
       custom_textcolor = LightGray;
 
       //button colors
-      button_textbackground_normal = 3; //TODO set attractive colors
+      button_textbackground_normal = 3;
       button_textbackground_normal_shadow = Blue;
       button_textcolor_normal = Black;
       button_textbackground_selected = Blue;
@@ -171,14 +170,11 @@ begin
         for j := 1 to width do
             Write(' ');
     end;
-
     x := width div 2 - Length(message) div 2;
     if (messageY = -1) or (messageY > height-1) then y := height div 2
     else y := messageY;
-
     GotoXY(startX + x, startY + y);
     Write(message);
-
     resetDefaultColors(True, True);
 end;
 
@@ -191,7 +187,6 @@ begin
     assign(t, path);
 	reset(t);
 	i := 0;
-
     GotoXY(startX, startY);
 	while not(eof(t)) do
 	begin

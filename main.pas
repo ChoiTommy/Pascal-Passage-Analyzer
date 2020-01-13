@@ -1,15 +1,13 @@
 program main;
 {*
  *           Pascal Passage Analyser
- * This program is created for analysing a passage
- * in a text file. Since the program is in its
- * early stage, its features are limited. It can
- * count the number of paragraphs, number of words,
- * number of sentences, reading time, number of
- * unique words in a passage. It can also count and
- * find a specific words in the passage.
+ * This program is created for analyzing a passage
+ * in a text file. It can count the number of
+ * paragraphs, number of words, number of sentences,
+ * reading time, number of unique words in a
+ * passage. It can also count and find a specific
+ * words in the passage.
  *}
-//TODO set colors for buttons or background after finishing coding
 uses crt, ui, stringListType, sysutils, longStringType, passageAnalyser, FastConsole;
 
 const window_width = 120; //console window width
@@ -24,6 +22,11 @@ const window_width = 120; //console window width
       window2_startY = 1;
       window2_endX = 120;
       window2_endY = 30;
+
+      version = '3';
+      author = 'Created by Tommy Choi';
+      school = '6A06 HKTA Tang Hin Memorial Secondary School';
+      copyright = '(c) 2020 Tommy Choi';
 
 var state, front, i : Integer;
     passage : longString; //array of characters storing the passage
@@ -90,7 +93,6 @@ const banner_startX = (window_width - 62) div 2;
       msgbox_height = 15;
       msgbox_startX = (window_width-msgbox_width) div 2;
       msgbox_startY = 12;
-      //msgbox_text = 'Rename your file as test.txt or type your file name here.';
 
       inputbox_text = 'File name';
       inputbox_boxWidth = 32; //no. of characters to be shown in the inputbox
@@ -106,7 +108,6 @@ const banner_startX = (window_width - 62) div 2;
       button_ok_startY = button_quit_startY;
 
       valid_file_name_char = ['0'..'9', 'a'..'z', 'A'..'Z', '.', ' ', '/', '_', '-', '''']; //characters that are allowed to type
-
 var c : Char;
     cursorX, cursorY, buttonPos : Integer;
     fileExist : Boolean;
@@ -119,9 +120,8 @@ begin
     drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, '', -1);
     drawInputBox(inputbox_startX, inputbox_startY, inputbox_boxWidth, inputbox_text, inputbox_hint, False);
     drawButton(button_quit_startX, button_quit_startY, button_width, button_height, 'Quit', 0);
-    buttonPos := 1; //0:'Quit' 1:'OK'
+    buttonPos := 1;   //0:'Quit' 1:'OK'
     drawButton(button_ok_startX, button_ok_startY, button_width, button_height, 'OK', 1);
-
     cursorX := inputbox_startX + Length(inputbox_text) + 3;
     cursorY := inputbox_startY + 1;
     GotoXY(cursorX, cursorY);
@@ -171,13 +171,22 @@ begin
             GotoXY(cursorX, cursorY);
         end;
     until c = #13;
-
+    cursoroff;
+    case buttonPos of
+        0: drawButton(button_quit_startX, button_quit_startY, button_width, button_height, 'Quit', 2);
+        1: drawButton(button_ok_startX, button_ok_startY, button_width, button_height, 'OK', 2);
+    end;
+    Delay(300);
+    case buttonPos of
+        0: drawButton(button_quit_startX, button_quit_startY, button_width, button_height, 'Quit', 1);
+        1: drawButton(button_ok_startX, button_ok_startY, button_width, button_height, 'OK', 1);
+    end;
+    Delay(200);
     if buttonPos = 0 then state := -1 //quit
     else
     begin
         ClrScr;
         cursoroff;
-
         if textFileName = '' then textFileName := 'default.txt';
         fileExist := FileExists(textFileName);
         if fileExist then
@@ -186,7 +195,6 @@ begin
             Reset(t);
             readLongString(t, passage);
             Close(t);
-
             //generating statistics
             noOfWords := countNoOfWords(passage);
             noOfSent := countNoOfSentences(passage);
@@ -217,8 +225,7 @@ begin
     end;
 end;
 
-procedure mainScreen(var state : Integer);
-(*two windows*)
+procedure mainScreen(var state : Integer); //two windows
 const banner_startX = 2; //2nd window
       banner_startY = 1;
       banner_path = 'ASCII art text files/mainScreenBanner.txt';
@@ -243,14 +250,12 @@ const banner_startX = 2; //2nd window
 
       button_quit_width = 15;
       button_quit_height = 1;
-      button_quit_startX = 27; //2nd window
+      button_quit_startX = 27; //in 2nd window
       button_quit_startY = 27;
       button_quit_text = 'Quit';
-
 var position : Integer;
     c : Char;
 begin
-    //2nd window
     Window(window2_startX, window2_startY, window2_endX, window2_endY);
     setColors(custom_textbackground, custom_textcolor);
     ClrScr;
@@ -261,7 +266,6 @@ begin
     drawButton(button_find_startX, button_find_startY, button_find_width, button_find_height, button_find_text, 0);
     drawButton(button_settings_startX, button_settings_startY, button_settings_width, button_settings_height, button_settings_text, 0);
     drawButton(button_quit_startX, button_quit_startY, button_quit_width, button_quit_height, button_quit_text, 0);
-
     repeat
 	  	c := ReadKey;
 		if c = #0 then
@@ -326,8 +330,7 @@ begin
 end;
 
 procedure statsScreen(var state : Integer);
-(*show some basic statistics of the passage*)
-(*A banner is missing currently*)
+(*Showing some basic statistics of the passage*)
 const title_path = 'ASCII art text files/stats_title.txt';
       margin = 1;
       tab_width = 40;
@@ -339,7 +342,6 @@ const title_path = 'ASCII art text files/stats_title.txt';
       msgbox_height = 17;
       msgbox_startX = tab_startX;
       msgbox_startY = tab_startY + tab_height + 1;
-
 var position: Integer;
     c : Char;
 begin
@@ -348,11 +350,9 @@ begin
     ClrScr;
     cursoroff;
     drawFromTxtFile(7, 1, title_path, False, False);
-
     position := 1;
     drawTab(tab_startX, tab_startY, tab_width, tab_height, 'No. of character(s)');
     drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, noOfCharString, -1);
-
     repeat
 	  	c := ReadKey;
 		if c = #0 then
@@ -430,9 +430,7 @@ begin
     resetDefaultColors(True, True);
     ClrScr;
     GotoXY(1, 1);
-
     SetLength(p, Length(positionInLongString));
-
     for i := 0 to Length(p)-1 do
     begin
         m := 0; //passageArray pointer 0-based
@@ -449,14 +447,13 @@ begin
         end;
         p[i].start := temp;
     end;
-
     m := 0;
     n := 0;
     for i := 0 to Length(a)-1 do
     begin
         for j := 1 to Length(a[i]) do
         begin
-            if (Length(p) <> 0) and (j = p[m].start+1) and (i = p[m].positionInPassageArray) then
+            if (Length(p) <> 0) and (j = p[m].start+1) and (i = p[m].positionInPassageArray) and (m < Length(p)) then
             begin
                 n := Length(s);
                 m := m + 1;
@@ -503,7 +500,6 @@ var target, s : string;
     cursorX, cursorY : Integer;
     c : Char;
     positionInLongString : IntegerArray;
-
 begin
     repeat
         writePassageWithoutScolling;
@@ -511,11 +507,9 @@ begin
         setColors(custom_textbackground, custom_textcolor);
         ClrScr;
         cursoroff;
-
         drawFromTxtFile(11, 1, title_path, False, False);
         drawInputBox(inputbox_startX, inputbox_startY, inputbox_boxWidth, inputbox_description, '', False);
         drawMsgBox(msgbox_startX, msgbox_startY, msgbox_width, msgbox_height, 'Type a word to search.', -1);
-
         cursoron;
         target := '';
         SetLength(positionInLongString, 0);
@@ -571,7 +565,15 @@ begin
     cursoroff;
     GotoXY(2, 3);
     WriteLn('Current text file: ', textFileName);
-    drawButton(12, 5, 21, 3, 'Reset', 0);
+    GotoXY(2, 26);
+    Write('Version ', version);
+    GotoXY(2, 27);
+    Write(author);
+    GotoXY(2, 28);
+    Write(school);
+    GotoXY(2, 29);
+    Write(copyright);
+    drawButton(12, 10, 21, 3, 'Reset', 0);
     state := 1;
     repeat
 	  	c := ReadKey;
@@ -598,10 +600,10 @@ begin
 		end
         else if c = #13 then
         begin
-            drawButton(12, 5, 21, 3, 'Reset', 2);
-            Delay(100);
-            drawButton(12, 5, 21, 3, 'Reset', 1);
-            Delay(100);
+            drawButton(12, 10, 21, 3, 'Reset', 2);
+            Delay(300);
+            drawButton(12, 10, 21, 3, 'Reset', 1);
+            Delay(200);
             state := 0;
         end;
 	until (c = #27) or (c = #13);

@@ -91,7 +91,6 @@ begin
         end;
         z := z + 1;
     until z > rear;
-
     for i := front to rear do //copy all values in the temp array into the actual array
         c[i] := d[i];
 end;

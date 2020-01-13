@@ -46,7 +46,7 @@ end;
 
 procedure readLongString(var t : Text; var s : longString);
 (*Read long string in a text file*)
-(*now hard coded, needed to be rewritten*)
+(*currently hard-coded, needed to be rewritten*)
 var n : Integer;
     c : Char;
 begin
@@ -158,12 +158,6 @@ end;
 procedure splitLongStringToArray(s : longString; var a : passageArray);
 (*
  * Split long string to an array of string with max length = screen_width
- * Current problems:
- * Only words are being considered in word wrapping,
- * other words such as emails (treated as one word)
- * will be seperated at the end of the line.
- * It can only start printing at (1, startY) for my
- * convenience.
  *)
 var i, x, n : Integer;
     temp : string;
@@ -209,7 +203,7 @@ begin
     begin
         j := 1;
         temp := i;
-        while (sub[j] = long[temp]) and (j <= Length(sub)) do
+        while (j <= Length(sub)) and (sub[j] = long[temp]) do
         begin
             j := j + 1;
             temp := temp + 1;
