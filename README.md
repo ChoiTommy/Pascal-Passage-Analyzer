@@ -42,8 +42,7 @@ I just used the colors available to design the UI, including blue, green, gray, 
 ![settingsScreen](Screenshots/settingsScreen.jpg)
 
 ## Document
-
-[Report](ICT SBA report.pdf)
+ - [Report](ICT_SBA_report.pdf)
 
 ## Compile
   Compile the file ```main.pas``` using any pascal compiler, and run the ```main.exe```
