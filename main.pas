@@ -8,6 +8,7 @@ program main;
  * passage. It can also count and find a specific
  * words in the passage.
  *}
+ {$R project.rc}
 uses crt, ui, stringListType, sysutils, longStringType, passageAnalyser, FastConsole;
 
 const window_width = 120; //console window width
@@ -490,7 +491,7 @@ const title_path = 'ASCII art text files/find_title.txt';
       inputbox_startY = 9;
       inputbox_boxWidth = 30;
       inputbox_description = 'Target';
-      valid_search_target = ['a'..'z', 'A'..'Z', '0'..'9', ',', '''', '.', ' ', '!'];
+      valid_search_target = [#32..#126];
       msgbox_width = Length(inputbox_description) + inputbox_boxWidth + 4;
       msgbox_height = 15;
       msgbox_startX = inputbox_startX;

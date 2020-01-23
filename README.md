@@ -1,5 +1,7 @@
 # Grandmaly - A feature-poor passage analyzer
 
+![Icon](icon.ico)
+
 This project is created for 2020 HKDSE Information and Communication Technology School-based assessment. _**Grandmaly**_ is a simple passage analyzer that aims to provide basic (but **inaccurate**) statistics for your primary-school level composition. So before submitting your childish, poor-organized, vocabulary-insufficient piece of writing to your trash English teacher, remember loading it into _Grandmaly_, she will help you take a look on it, and give you brief (sometime useless) feedback to the passage, like a grandma. ~~(Actually not related)~~
 
 ## Features
@@ -39,5 +41,10 @@ I just used the colors available to design the UI, including blue, green, gray, 
 
 ![settingsScreen](Screenshots/settingsScreen.jpg)
 
+## Document
+
+[Report](ICT SBA report.pdf)
+
 ## Compile
-  Compile the file ```main.pas``` and run the ```.exe``` file using any pascal compiler
+
+  Compile the file ```main.pas``` using any pascal compiler, and run the ```main.exe```
